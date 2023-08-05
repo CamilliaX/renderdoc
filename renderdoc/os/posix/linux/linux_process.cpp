@@ -713,8 +713,7 @@ void CacheDebuggerPresent()
           split(tracermaps, lines, '\n');
 
           // remove any lines that don't reference librenderdoc.so
-          lines.removeIf(
-              [](const rdcstr &l) { return !l.contains("/lib" STRINGIZE(RDOC_BASE_NAME) ".so"); });
+          lines.removeIf([](const rdcstr &l) { return !l.contains("/librenderdoc.so"); });
           merge(lines, tracermaps, '\n');
 
           if(tracermaps.contains("r-x"))

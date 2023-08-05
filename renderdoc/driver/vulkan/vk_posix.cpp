@@ -34,8 +34,6 @@
 #include <sys/stat.h>
 #include <unistd.h>
 
-extern "C" const rdcstr VulkanLayerJSONBasename;
-
 bool VulkanReplay::IsOutputWindowVisible(uint64_t id)
 {
   if(id == 0 || m_OutputWindows.find(id) == m_OutputWindows.end())
@@ -292,7 +290,7 @@ static rdcstr GenerateJSON(const rdcstr &sopath)
   idx = json.find(enableVarString);
   while(idx >= 0)
   {
-    json = json.substr(0, idx) + "ENABLE_VULKAN_" + strupper(VulkanLayerJSONBasename) + "_CAPTURE" +
+    json = json.substr(0, idx) + STRINGIZE(ENABLE_VULKAN_RENDERDOC_CAPTURE) +
            json.substr(idx + sizeof(enableVarString) - 1);
 
     idx = json.find(enableVarString);
@@ -365,21 +363,24 @@ ITERABLE_OPERATORS(LayerPath);
 
 rdcstr LayerRegistrationPath(LayerPath path)
 {
-  const rdcstr json_filename =
-      VulkanLayerJSONBasename + "_capture" STRINGIZE(RENDERDOC_VULKAN_JSON_SUFFIX) ".json";
-
   switch(path)
   {
-    case LayerPath::usr: return "/usr/share/vulkan/implicit_layer.d/" + json_filename;
-    case LayerPath::etc: return "/etc/vulkan/implicit_layer.d/" + json_filename;
+    case LayerPath::usr:
+      return "/usr/share/vulkan/implicit_layer.d/renderdoc_capture" STRINGIZE(
+          RENDERDOC_VULKAN_JSON_SUFFIX) ".json";
+    case LayerPath::etc:
+      return "/etc/vulkan/implicit_layer.d/renderdoc_capture" STRINGIZE(
+          RENDERDOC_VULKAN_JSON_SUFFIX) ".json";
     case LayerPath::home:
     {
       rdcstr xdg = Process::GetEnvVariable("XDG_DATA_HOME");
       if(!xdg.empty() && FileIO::exists(xdg))
-        return xdg + "/vulkan/implicit_layer.d/" + json_filename;
+        return xdg + "/vulkan/implicit_layer.d/renderdoc_capture" STRINGIZE(
+                         RENDERDOC_VULKAN_JSON_SUFFIX) ".json";
 
       rdcstr home_path = Process::GetEnvVariable("HOME");
-      return home_path + "/.local/share/vulkan/implicit_layer.d/" + json_filename;
+      return home_path + "/.local/share/vulkan/implicit_layer.d/renderdoc_capture" STRINGIZE(
+                             RENDERDOC_VULKAN_JSON_SUFFIX) ".json";
     }
     default: break;
   }

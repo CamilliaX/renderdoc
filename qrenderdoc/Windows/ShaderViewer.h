@@ -314,8 +314,6 @@ private:
   bool m_DeferredInit = false;
   rdcarray<std::function<void(ShaderViewer *)>> m_DeferredCommands;
 
-  bool m_ContextActive = false;
-
   QSemaphore m_BackgroundRunning;
 
   rdcarray<AccessedResourceData> m_AccessedResources;

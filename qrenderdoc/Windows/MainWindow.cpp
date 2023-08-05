@@ -394,12 +394,7 @@ MainWindow::MainWindow(ICaptureContext &ctx) : QMainWindow(NULL), ui(new Ui::Mai
   ui->action_Recompress_Capture->setEnabled(false);
 
 #if defined(Q_OS_WIN32)
-#define SELF_HOST_NAME "rdocself.dll"
-#else
-#define SELF_HOST_NAME "librdocself.so"
-#endif
-
-  if(RENDERDOC_CanSelfHostedCapture(SELF_HOST_NAME))
+  if(GetModuleHandleA("rdocself.dll"))
   {
     QAction *begin = new QAction(tr("Start Self-hosted Capture"), this);
     QAction *end = new QAction(tr("End Self-hosted Capture"), this);
@@ -409,20 +404,21 @@ MainWindow::MainWindow(ICaptureContext &ctx) : QMainWindow(NULL), ui(new Ui::Mai
       begin->setEnabled(false);
       end->setEnabled(true);
 
-      RENDERDOC_StartSelfHostCapture(SELF_HOST_NAME);
+      RENDERDOC_StartSelfHostCapture("rdocself.dll");
     });
 
     QObject::connect(end, &QAction::triggered, [begin, end]() {
       begin->setEnabled(true);
       end->setEnabled(false);
 
-      RENDERDOC_EndSelfHostCapture(SELF_HOST_NAME);
+      RENDERDOC_EndSelfHostCapture("rdocself.dll");
     });
 
     ui->menu_Tools->addSeparator();
     ui->menu_Tools->addAction(begin);
     ui->menu_Tools->addAction(end);
   }
+#endif
 
   m_Ctx.AddCaptureViewer(this);
 

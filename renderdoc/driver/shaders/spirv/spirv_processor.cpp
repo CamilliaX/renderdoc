@@ -554,19 +554,6 @@ void Processor::RegisterOp(Iter it)
       }
     }
   }
-  else if(opdata.op == Op::ExecutionModeId)
-  {
-    OpExecutionModeId decoded(it);
-
-    for(auto entryIt = entries.begin(); entryIt != entries.end(); ++entryIt)
-    {
-      if(entryIt->id == decoded.entryPoint)
-      {
-        entryIt->executionModes.Register(decoded);
-        break;
-      }
-    }
-  }
   else if(opdata.op == Op::Variable)
   {
     OpVariable decoded(it);

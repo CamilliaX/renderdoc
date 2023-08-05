@@ -60,11 +60,7 @@ public:
   bool IsInjectMode() override { return m_Inject; }
   void SetInjectMode(bool inject) override;
 
-  void SetExecutableFilename(const rdcstr &filename) override
-  {
-    SetExecutableFilename(filename, false);
-  }
-
+  void SetExecutableFilename(const rdcstr &filename) override;
   void SetWorkingDirectory(const rdcstr &dir) override;
   void SetCommandLine(const rdcstr &cmd) override;
   void SetEnvironmentModifications(const rdcarray<EnvironmentModification> &modifications) override;
@@ -110,8 +106,6 @@ private slots:
   void lineEdit_keyPress(QKeyEvent *);
 
 private:
-  void SetExecutableFilename(const rdcstr &filename, bool remoteSelection);
-
   Ui::CaptureDialog *ui;
   ICaptureContext &m_Ctx;
   MainWindow *m_Main;

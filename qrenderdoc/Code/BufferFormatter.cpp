@@ -1334,7 +1334,7 @@ ParsedFormat BufferFormatter::ParseFormatString(const QString &formatString, uin
         el.type.arrayByteStride = 8;
         el.type.elements = arrayCount;
 
-        cur->offset += 8 * arrayCount;
+        cur->offset += 8;
 
         if(!isPadding)
         {
@@ -2442,7 +2442,7 @@ QString BufferFormatter::GetBufferFormatString(Packing::Rules pack, ResourceId s
       }
       else if(viewFormat.type == ResourceFormatType::R11G11B10)
       {
-        format = lit("[[packed(r11g11b10)]] float3");
+        format = lit("[[packed(r11g11b10]] float3");
       }
       else
       {

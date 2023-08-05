@@ -101,11 +101,8 @@ public:
 private:
   virtual void PreParse(uint32_t maxId);
   virtual void PostParse();
-
   virtual void RegisterOp(Iter iter);
   virtual void UnregisterOp(Iter iter);
-
-  void CalculateArrayTypeName(DataType &type);
 
   rdcstr StringiseConstant(rdcspv::Id id) const;
   void CheckDebuggable(bool &debuggable, rdcstr &debugStatus) const;

@@ -180,8 +180,6 @@ static bool HandleHandshakeClient(ActiveClient &activeClient, ClientThread *thre
   {
     ReadSerialiser ser(new StreamReader(threadData->socket, Ownership::Nothing), Ownership::Stream);
 
-    ser.SetStreamingMode(true);
-
     // this thread just handles receiving the handshake and sending a busy signal without blocking
     // the server thread
     RemoteServerPacket type = ser.ReadChunk<RemoteServerPacket>();
@@ -1207,8 +1205,6 @@ RENDERDOC_CreateRemoteServerConnection(const rdcstr &URL, IRemoteServer **rend)
 
   {
     ReadSerialiser ser(new StreamReader(sock, Ownership::Nothing), Ownership::Stream);
-
-    ser.SetStreamingMode(true);
 
     RemoteServerPacket type = ser.ReadChunk<RemoteServerPacket>();
 

@@ -90,7 +90,7 @@ RDPreviewTooltip::RDPreviewTooltip(PipelineStateViewer *parent, CustomPaintWidge
 
   pipe = parent;
 
-  setWindowFlags(Qt::ToolTip | Qt::WindowStaysOnTopHint);
+  setWindowFlags(Qt::ToolTip);
   setAttribute(Qt::WA_TransparentForMouseEvents);
   setForegroundRole(QPalette::ToolTipText);
   setBackgroundRole(QPalette::ToolTipBase);

@@ -29,7 +29,6 @@
 #include <shlwapi.h>
 
 static int dllLocator = 0;
-extern "C" const rdcstr VulkanLayerJSONBasename;
 
 void VulkanReplay::OutputWindow::SetWindowHandle(WindowingData window)
 {
@@ -258,8 +257,6 @@ bool ProcessImplicitLayersKey(HKEY key, const rdcstr &path, rdcarray<rdcstr> *ot
   for(size_t i = 0; i < myJSON.length(); i++)
     myJSON[i] = towlower(myJSON[i]);
 
-  rdcwstr VulkanLayerJSONFilename = StringFormat::UTF82Wide(VulkanLayerJSONBasename + ".json");
-
   while(ret == ERROR_SUCCESS)
   {
     // convert the name here so we preserve casing
@@ -272,7 +269,7 @@ bool ProcessImplicitLayersKey(HKEY key, const rdcstr &path, rdcarray<rdcstr> *ot
     {
       thisRegistered = true;
     }
-    else if(wcsstr(name, VulkanLayerJSONFilename.c_str()) != NULL)
+    else if(wcsstr(name, L"renderdoc.json") != NULL)
     {
       if(otherJSONs)
         otherJSONs->push_back(utf8name);

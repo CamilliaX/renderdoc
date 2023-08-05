@@ -1257,12 +1257,10 @@ ShaderDebugTrace *Debugger::BeginDebug(DebugAPIWrapper *api, const ShaderStage s
         // sampler, so accessing the original type might be non-trivial at point of access
         uint32_t texType = DebugAPIWrapper::Float_Texture;
 
-        Id imgid = innertype->id;
+        Id imgid = type.InnerType();
 
         if(innertype->type == DataType::SampledImageType)
           imgid = sampledImageTypes[imgid].baseId;
-
-        RDCASSERT(imageTypes[imgid].dim != Dim::Max);
 
         if(imageTypes[imgid].dim == Dim::Buffer)
           texType |= DebugAPIWrapper::Buffer_Texture;
