@@ -3104,6 +3104,24 @@ bool WrappedVulkan::Serialise_vkCreateDevice(SerialiserType &ser, VkPhysicalDevi
         m_DynAttachmentLoop = ext->attachmentFeedbackLoopDynamicState != VK_FALSE;
       }
       END_PHYS_EXT_CHECK();
+      //raytracing
+      BEGIN_PHYS_EXT_CHECK(VkPhysicalDeviceAccelerationStructureFeaturesKHR,
+                           VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR);
+      {
+        CHECK_PHYS_EXT_FEATURE(accelerationStructure);
+        CHECK_PHYS_EXT_FEATURE(accelerationStructureCaptureReplay);
+        CHECK_PHYS_EXT_FEATURE(accelerationStructureIndirectBuild);
+        CHECK_PHYS_EXT_FEATURE(accelerationStructureHostCommands);
+        CHECK_PHYS_EXT_FEATURE(descriptorBindingAccelerationStructureUpdateAfterBind);
+      }
+      END_PHYS_EXT_CHECK();
+
+  /*    BEGIN_PHYS_EXT_CHECK(VkPhysicalDeviceAccelerationStructurePropertiesKHR,
+                           VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_PROPERTIES_KHR);
+      {
+        CHECK_PHYS_EXT_FEATURE();
+      }
+      END_PHYS_EXT_CHECK();*/
 
       BEGIN_PHYS_EXT_CHECK(VkPhysicalDeviceImage2DViewOf3DFeaturesEXT,
                            VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_IMAGE_2D_VIEW_OF_3D_FEATURES_EXT);

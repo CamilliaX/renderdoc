@@ -1,0 +1,255 @@
+From b68e088d324ad474fcce99a9cc96c806fa392991 Mon Sep 17 00:00:00 2001
+From: chen <491441320@qq.com>
+Date: Sat, 5 Aug 2023 21:33:22 +0800
+Subject: [PATCH] #add enum
+
+---
+ renderdoc/driver/vulkan/vk_common.h      | 17 +++++-
+ renderdoc/driver/vulkan/vk_core.cpp      |  2 +-
+ renderdoc/driver/vulkan/vk_core.h        |  4 +-
+ renderdoc/driver/vulkan/vk_serialise.cpp | 39 +++++++++++++
+ renderdoc/driver/vulkan/vk_stringise.cpp | 73 ++++++++++++++++++++++++
+ 5 files changed, 132 insertions(+), 3 deletions(-)
+
+diff --git a/renderdoc/driver/vulkan/vk_common.h b/renderdoc/driver/vulkan/vk_common.h
+index e0aee36e6..999cf9716 100644
+--- a/renderdoc/driver/vulkan/vk_common.h
++++ b/renderdoc/driver/vulkan/vk_common.h
+@@ -1418,6 +1418,7 @@ DECLARE_REFLECTION_STRUCT(VkAccelerationStructureBuildRangeInfoKHR);
+ DECLARE_REFLECTION_STRUCT(VkAccelerationStructureGeometryTrianglesDataKHR);
+ DECLARE_REFLECTION_STRUCT(VkAccelerationStructureGeometryAabbsDataKHR);
+ DECLARE_REFLECTION_STRUCT(VkAccelerationStructureGeometryInstancesDataKHR);
++DECLARE_REFLECTION_STRUCT(VkAccelerationStructureGeometryDataKHR);
+ DECLARE_REFLECTION_STRUCT(VkAccelerationStructureGeometryKHR);
+ DECLARE_REFLECTION_STRUCT(VkAccelerationStructureBuildGeometryInfoKHR);
+ DECLARE_REFLECTION_STRUCT(VkAccelerationStructureCreateInfoKHR);
+@@ -1431,6 +1432,10 @@ DECLARE_REFLECTION_STRUCT(VkCopyMemoryToAccelerationStructureInfoKHR);
+ DECLARE_REFLECTION_STRUCT(VkCopyAccelerationStructureInfoKHR);
+ DECLARE_REFLECTION_STRUCT(VkAccelerationStructureBuildSizesInfoKHR);
+ 
++DECLARE_REFLECTION_STRUCT(VkDeviceOrHostAddressConstKHR);
++DECLARE_REFLECTION_STRUCT(VkDeviceOrHostAddressKHR);
++
++
+ DECLARE_DESERIALISE_TYPE(VkAcquireNextImageInfoKHR);
+ DECLARE_DESERIALISE_TYPE(VkAcquireProfilingLockInfoKHR);
+ DECLARE_DESERIALISE_TYPE(VkApplicationInfo);
+@@ -1841,7 +1846,7 @@ DECLARE_DESERIALISE_TYPE(VkAccelerationStructureBuildRangeInfoKHR);
+ DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryTrianglesDataKHR);
+ DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryAabbsDataKHR);
+ DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryInstancesDataKHR);
+-DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryDataKHR);
++//DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryDataKHR);
+ DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryKHR);
+ DECLARE_DESERIALISE_TYPE(VkAccelerationStructureBuildGeometryInfoKHR);
+ DECLARE_DESERIALISE_TYPE(VkAccelerationStructureCreateInfoKHR);
+@@ -1855,6 +1860,10 @@ DECLARE_DESERIALISE_TYPE(VkCopyMemoryToAccelerationStructureInfoKHR);
+ DECLARE_DESERIALISE_TYPE(VkCopyAccelerationStructureInfoKHR);
+ DECLARE_DESERIALISE_TYPE(VkAccelerationStructureBuildSizesInfoKHR);
+ 
++
++
++
++
+ // plain structs with no next chain
+ DECLARE_REFLECTION_STRUCT(VkAllocationCallbacks);
+ DECLARE_REFLECTION_STRUCT(VkAttachmentDescription);
+@@ -2177,6 +2186,12 @@ DECLARE_REFLECTION_ENUM(VkAccelerationStructureCreateFlagBitsKHR);
+ DECLARE_REFLECTION_ENUM(VkBuildAccelerationStructureModeKHR);
+ DECLARE_REFLECTION_ENUM(VkBuildAccelerationStructureFlagBitsKHR);
+ DECLARE_REFLECTION_ENUM(VkGeometryFlagBitsKHR);
++DECLARE_REFLECTION_ENUM(VkRayTracingShaderGroupTypeKHR);
++DECLARE_REFLECTION_ENUM(VkGeometryTypeKHR);
++DECLARE_REFLECTION_ENUM(VkAccelerationStructureTypeKHR);
++DECLARE_REFLECTION_ENUM(VkCopyAccelerationStructureModeKHR);
++DECLARE_REFLECTION_ENUM(VkAccelerationStructureCompatibilityKHR);
++DECLARE_REFLECTION_ENUM(VkAccelerationStructureBuildTypeKHR);
+ 
+ // win32 only enums
+ #ifdef VK_USE_PLATFORM_WIN32_KHR
+diff --git a/renderdoc/driver/vulkan/vk_core.cpp b/renderdoc/driver/vulkan/vk_core.cpp
+index e73d52b58..fa68bf0c4 100644
+--- a/renderdoc/driver/vulkan/vk_core.cpp
++++ b/renderdoc/driver/vulkan/vk_core.cpp
+@@ -1566,7 +1566,7 @@ static const VkExtensionProperties supportedExtensions[] = {
+         VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME, VK_KHR_ACCELERATION_STRUCTURE_SPEC_VERSION,
+     },    
+     {
+-        VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME, VK_KHR_ACCELERATION_STRUCTURE_SPEC_VERSION,
++        VK_KHR_DEFERRED_HOST_OPERATIONS_EXTENSION_NAME, VK_KHR_DEFERRED_HOST_OPERATIONS_SPEC_VERSION,
+     },
+ };
+ 
+diff --git a/renderdoc/driver/vulkan/vk_core.h b/renderdoc/driver/vulkan/vk_core.h
+index 92bb52c43..bbdb1411a 100644
+--- a/renderdoc/driver/vulkan/vk_core.h
++++ b/renderdoc/driver/vulkan/vk_core.h
+@@ -2639,7 +2639,9 @@ public:
+   // VK_EXT_attachment_feedback_loop_dynamic_state
+   IMPLEMENT_FUNCTION_SERIALISED(void, vkCmdSetAttachmentFeedbackLoopEnableEXT,
+                                 VkCommandBuffer commandBuffer, VkImageAspectFlags aspectMask);
+- //VK_KHR_acceleration_structure
++ 
++  //raytracing
++  //VK_KHR_acceleration_structure
+   IMPLEMENT_FUNCTION_SERIALISED(VkResult, vkCreateAccelerationStructureKHR, VkDevice device,
+                                 const VkAccelerationStructureCreateInfoKHR *pCreateInfo,
+                                 const VkAllocationCallbacks *pAllocator,
+diff --git a/renderdoc/driver/vulkan/vk_serialise.cpp b/renderdoc/driver/vulkan/vk_serialise.cpp
+index a8b8e86dc..4edfc7d2c 100644
+--- a/renderdoc/driver/vulkan/vk_serialise.cpp
++++ b/renderdoc/driver/vulkan/vk_serialise.cpp
+@@ -167,6 +167,9 @@ DECL_VKFLAG_EXT(VkGraphicsPipelineLibrary, EXT);
+ DECL_VKFLAG(VkRendering);
+ DECL_VKFLAG_EXT(VkPresentScaling, EXT);
+ DECL_VKFLAG_EXT(VkPresentGravity, EXT);
++DECL_VKFLAG_EXT(VkBuildAccelerationStructure, KHR);
++DECL_VKFLAG_EXT(VkAccelerationStructureCreate, KHR);
++DECL_VKFLAG_EXT(VkGeometry, KHR);
+ 
+ // serialise a member as flags - cast to the Bits enum for serialisation so the stringification
+ // picks up the bitfield and doesn't treat it as uint32_t. Then we rename the type back to the base
+@@ -8339,6 +8342,37 @@ void Deserialise(const VkPhysicalDeviceAttachmentFeedbackLoopLayoutFeaturesEXT &
+ }
+ 
+ //raytracing
++template <typename SerialiserType>
++void DoSerialise(SerialiserType &ser, VkDeviceOrHostAddressConstKHR &el)
++{
++  SERIALISE_MEMBER(deviceAddress);
++  SERIALISE_MEMBER(hostAddress);
++}
++
++template <typename SerialiserType>
++void DoSerialise(SerialiserType &ser, VkDeviceOrHostAddressKHR &el)
++{
++  SERIALISE_MEMBER(deviceAddress);
++  SERIALISE_MEMBER(hostAddress);
++}
++
++template <typename SerialiserType>
++void DoSerialise(SerialiserType &ser, VkAccelerationStructureGeometryDataKHR &el)
++{
++  SERIALISE_MEMBER(triangles);
++  SERIALISE_MEMBER(aabbs);
++  SERIALISE_MEMBER(instances);
++}
++
++template <typename SerialiserType>
++void DoSerialise(SerialiserType &ser, VkAccelerationStructureBuildRangeInfoKHR &el)
++{
++  SERIALISE_MEMBER(primitiveCount);
++  SERIALISE_MEMBER(primitiveOffset);
++  SERIALISE_MEMBER(firstVertex);
++  SERIALISE_MEMBER(transformOffset);
++}
++
+ template <>
+ void Deserialise(const VkAccelerationStructureGeometryTrianglesDataKHR &el)
+ {
+@@ -11981,6 +12015,7 @@ INSTANTIATE_SERIALISE_TYPE(VkVertexInputAttributeDescription2EXT);
+ INSTANTIATE_SERIALISE_TYPE(VkVertexInputBindingDescription2EXT);
+ INSTANTIATE_SERIALISE_TYPE(VkWriteDescriptorSet);
+ //raytracing
++INSTANTIATE_SERIALISE_TYPE(VkAccelerationStructureBuildRangeInfoKHR);
+ INSTANTIATE_SERIALISE_TYPE(VkWriteDescriptorSetAccelerationStructureKHR);
+ INSTANTIATE_SERIALISE_TYPE(VkAccelerationStructureBuildGeometryInfoKHR);
+ INSTANTIATE_SERIALISE_TYPE(VkPhysicalDeviceAccelerationStructureFeaturesKHR);
+@@ -11996,6 +12031,10 @@ INSTANTIATE_SERIALISE_TYPE(VkCopyAccelerationStructureInfoKHR);
+ INSTANTIATE_SERIALISE_TYPE(VkCopyAccelerationStructureToMemoryInfoKHR);
+ INSTANTIATE_SERIALISE_TYPE(VkCopyMemoryToAccelerationStructureInfoKHR);
+ INSTANTIATE_SERIALISE_TYPE(VkAccelerationStructureBuildSizesInfoKHR);
++INSTANTIATE_SERIALISE_TYPE(VkAccelerationStructureGeometryDataKHR);
++INSTANTIATE_SERIALISE_TYPE(VkDeviceOrHostAddressConstKHR);
++INSTANTIATE_SERIALISE_TYPE(VkDeviceOrHostAddressKHR);
++
+ 
+ // plain structs with no next chain
+ INSTANTIATE_SERIALISE_TYPE(VkAllocationCallbacks);
+diff --git a/renderdoc/driver/vulkan/vk_stringise.cpp b/renderdoc/driver/vulkan/vk_stringise.cpp
+index 9dd3526a0..c050f2379 100644
+--- a/renderdoc/driver/vulkan/vk_stringise.cpp
++++ b/renderdoc/driver/vulkan/vk_stringise.cpp
+@@ -3739,6 +3739,79 @@ rdcstr DoStringise(const VkGeometryFlagBitsKHR &el)
+   END_BITFIELD_STRINGISE();
+ }
+ 
++template <>
++rdcstr DoStringise(const VkRayTracingShaderGroupTypeKHR &el)
++{
++  BEGIN_BITFIELD_STRINGISE(VkRayTracingShaderGroupTypeKHR);
++  {
++    STRINGISE_BITFIELD_BIT(VK_RAY_TRACING_SHADER_GROUP_TYPE_GENERAL_KHR);
++    STRINGISE_BITFIELD_BIT(VK_RAY_TRACING_SHADER_GROUP_TYPE_TRIANGLES_HIT_GROUP_KHR);
++    STRINGISE_BITFIELD_BIT(VK_RAY_TRACING_SHADER_GROUP_TYPE_PROCEDURAL_HIT_GROUP_KHR);
++  }
++  END_BITFIELD_STRINGISE();
++}
++
++template <>
++rdcstr DoStringise(const VkGeometryTypeKHR &el)
++{
++  BEGIN_BITFIELD_STRINGISE(VkGeometryTypeKHR);
++  {
++    STRINGISE_BITFIELD_BIT(VK_GEOMETRY_TYPE_TRIANGLES_KHR);
++    STRINGISE_BITFIELD_BIT(VK_GEOMETRY_TYPE_AABBS_KHR);
++    STRINGISE_BITFIELD_BIT(VK_GEOMETRY_TYPE_INSTANCES_KHR);
++  }
++  END_BITFIELD_STRINGISE();
++}
++
++template <>
++rdcstr DoStringise(const VkAccelerationStructureTypeKHR &el)
++{
++  BEGIN_BITFIELD_STRINGISE(VkAccelerationStructureTypeKHR);
++  {
++    STRINGISE_BITFIELD_BIT(VK_ACCELERATION_STRUCTURE_TYPE_TOP_LEVEL_KHR);
++    STRINGISE_BITFIELD_BIT(VK_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL_KHR);
++    STRINGISE_BITFIELD_BIT(VK_ACCELERATION_STRUCTURE_TYPE_GENERIC_KHR);
++  }
++  END_BITFIELD_STRINGISE();
++}
++
++template <>
++rdcstr DoStringise(const VkCopyAccelerationStructureModeKHR &el)
++{
++  BEGIN_BITFIELD_STRINGISE(VkCopyAccelerationStructureModeKHR);
++  {
++    STRINGISE_BITFIELD_BIT(VK_COPY_ACCELERATION_STRUCTURE_MODE_CLONE_KHR);
++    STRINGISE_BITFIELD_BIT(VK_COPY_ACCELERATION_STRUCTURE_MODE_COMPACT_KHR);
++    STRINGISE_BITFIELD_BIT(VK_COPY_ACCELERATION_STRUCTURE_MODE_SERIALIZE_KHR);
++    STRINGISE_BITFIELD_BIT(VK_COPY_ACCELERATION_STRUCTURE_MODE_DESERIALIZE_KHR);
++  }
++  END_BITFIELD_STRINGISE();
++}
++
++template <>
++rdcstr DoStringise(const VkAccelerationStructureCompatibilityKHR &el)
++{
++  BEGIN_BITFIELD_STRINGISE(VkAccelerationStructureCompatibilityKHR);
++  {
++    STRINGISE_BITFIELD_BIT(VK_ACCELERATION_STRUCTURE_COMPATIBILITY_COMPATIBLE_KHR);
++    STRINGISE_BITFIELD_BIT(VK_ACCELERATION_STRUCTURE_COMPATIBILITY_INCOMPATIBLE_KHR);
++  }
++  END_BITFIELD_STRINGISE();
++}
++
++template <>
++rdcstr DoStringise(const VkAccelerationStructureBuildTypeKHR &el)
++{
++  BEGIN_BITFIELD_STRINGISE(VkAccelerationStructureBuildTypeKHR);
++  {
++    STRINGISE_BITFIELD_BIT(VK_ACCELERATION_STRUCTURE_BUILD_TYPE_HOST_KHR);
++    STRINGISE_BITFIELD_BIT(VK_ACCELERATION_STRUCTURE_BUILD_TYPE_DEVICE_KHR);
++    STRINGISE_BITFIELD_BIT(VK_ACCELERATION_STRUCTURE_BUILD_TYPE_HOST_OR_DEVICE_KHR);
++  }
++  END_BITFIELD_STRINGISE();
++}
++
++
+ #ifdef VK_USE_PLATFORM_WIN32_KHR
+ template <>
+ rdcstr DoStringise(const VkFullScreenExclusiveEXT &el)
+-- 
+2.41.0.windows.2
+
