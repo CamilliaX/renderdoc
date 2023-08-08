@@ -2455,45 +2455,11 @@ void WrappedVulkan::vkCmdCopyMemoryToAccelerationStructureKHR(
   }
 }
 
-template <typename SerialiserType>
-bool WrappedVulkan::Serialise_vkGetAccelerationStructureDeviceAddressKHR(
-    SerialiserType &ser, VkDevice device, const VkAccelerationStructureDeviceAddressInfoKHR *pInfo)
-{
-  SERIALISE_ELEMENT(device);
-  SERIALISE_ELEMENT_LOCAL(info, pInfo).Important();
-
-  SERIALISE_CHECK_READ_ERRORS();
-
-  if(IsReplayingAndReading())
-  {
-    ObjDisp(device)->GetAccelerationStructureDeviceAddressKHR(Unwrap(device), info);
-  }
-
-  SAFE_DELETE_ARRAY(info);
-
-  return true;
-}
 
 VkDeviceAddress WrappedVulkan::vkGetAccelerationStructureDeviceAddressKHR(
     VkDevice device, const VkAccelerationStructureDeviceAddressInfoKHR *pInfo)
 {
-  VkDeviceAddress ret;
-  SERIALISE_TIME_CALL(
-      ret = ObjDisp(device)->GetAccelerationStructureDeviceAddressKHR(Unwrap(device), pInfo));
-
-  if(IsActiveCapturing(m_State))
-  {
-    CACHE_THREAD_SERIALISER();
-
-    SCOPED_SERIALISE_CHUNK(VulkanChunk::vkGetAccelerationStructureDeviceAddressKHR);
-    Serialise_vkGetAccelerationStructureDeviceAddressKHR(ser, device, pInfo);
-
-    m_FrameCaptureRecord->AddChunk(scope.Get());
-    GetResourceManager()->MarkResourceFrameReferenced(GetResID(pInfo->accelerationStructure),
-                                                      eFrameRef_Read);
-  }
-
-  return ret;
+      return ObjDisp(device)->GetAccelerationStructureDeviceAddressKHR(Unwrap(device), pInfo);
 }
 
 template <typename SerialiserType>
@@ -2549,92 +2515,23 @@ void WrappedVulkan::vkCmdWriteAccelerationStructuresPropertiesKHR(
   }
 }
 
-template <typename SerialiserType>
-bool WrappedVulkan::Serialise_vkGetDeviceAccelerationStructureCompatibilityKHR(
-    SerialiserType &ser, VkDevice device, const VkAccelerationStructureVersionInfoKHR *pVersionInfo,
-    VkAccelerationStructureCompatibilityKHR *pCompatibility)
-{
-  SERIALISE_ELEMENT(device);
-  SERIALISE_ELEMENT_LOCAL(info, pVersionInfo).Important();
-  SERIALISE_ELEMENT_LOCAL(compat, pCompatibility).Important();
-
-  SERIALISE_CHECK_READ_ERRORS();
-
-  if(IsReplayingAndReading())
-  {
-    ObjDisp(device)->GetDeviceAccelerationStructureCompatibilityKHR(Unwrap(device), info, compat);
-  }
-
-  SAFE_DELETE_ARRAY(info);
-  SAFE_DELETE_ARRAY(compat);
-
-  return true;
-}
 
 void WrappedVulkan::vkGetDeviceAccelerationStructureCompatibilityKHR(
     VkDevice device, const VkAccelerationStructureVersionInfoKHR *pVersionInfo,
     VkAccelerationStructureCompatibilityKHR *pCompatibility)
 {
-  SERIALISE_TIME_CALL(ObjDisp(device)->GetDeviceAccelerationStructureCompatibilityKHR(
+  return(ObjDisp(device)->GetDeviceAccelerationStructureCompatibilityKHR(
       Unwrap(device), pVersionInfo, pCompatibility));
-
-  if(IsActiveCapturing(m_State))
-  {
-    CACHE_THREAD_SERIALISER();
-
-    SCOPED_SERIALISE_CHUNK(VulkanChunk::vkGetDeviceAccelerationStructureCompatibilityKHR);
-    Serialise_vkGetDeviceAccelerationStructureCompatibilityKHR(ser, device, pVersionInfo,
-                                                               pCompatibility);
-
-    m_FrameCaptureRecord->AddChunk(scope.Get());
-  }
 }
 
-template <typename SerialiserType>
-bool WrappedVulkan::Serialise_vkGetAccelerationStructureBuildSizesKHR(
-    SerialiserType &ser, VkDevice device, VkAccelerationStructureBuildTypeKHR buildType,
-    const VkAccelerationStructureBuildGeometryInfoKHR *pBuildInfo,
-    const uint32_t *pMaxPrimitiveCounts, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo)
-{
-  SERIALISE_ELEMENT(device);
-  SERIALISE_ELEMENT(buildType);
-  SERIALISE_ELEMENT_LOCAL(info, pBuildInfo).Important();
-  SERIALISE_ELEMENT_LOCAL(maxPrimitiveCounts, pMaxPrimitiveCounts).Important();
-  SERIALISE_ELEMENT_LOCAL(sizeInfo, pSizeInfo).Important();
-
-  SERIALISE_CHECK_READ_ERRORS();
-
-  if(IsReplayingAndReading())
-  {
-    ObjDisp(device)->GetAccelerationStructureBuildSizesKHR(Unwrap(device), buildType, info,
-                                                           maxPrimitiveCounts, sizeInfo);
-  }
-
-  SAFE_DELETE_ARRAY(info);
-  SAFE_DELETE_ARRAY(maxPrimitiveCounts);
-  SAFE_DELETE_ARRAY(sizeInfo);
-
-  return true;
-}
 
 void WrappedVulkan::vkGetAccelerationStructureBuildSizesKHR(
     VkDevice device, VkAccelerationStructureBuildTypeKHR buildType,
     const VkAccelerationStructureBuildGeometryInfoKHR *pBuildInfo,
     const uint32_t *pMaxPrimitiveCounts, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo)
 {
-  SERIALISE_TIME_CALL(ObjDisp(device)->GetAccelerationStructureBuildSizesKHR(
+  return (ObjDisp(device)->GetAccelerationStructureBuildSizesKHR(
       Unwrap(device), buildType, pBuildInfo, pMaxPrimitiveCounts, pSizeInfo));
-
-  if(IsActiveCapturing(m_State))
-  {
-    CACHE_THREAD_SERIALISER();
-
-    SCOPED_SERIALISE_CHUNK(VulkanChunk::vkGetAccelerationStructureBuildSizesKHR);
-    Serialise_vkGetAccelerationStructureBuildSizesKHR(ser, device, buildType, pBuildInfo,
-                                                      pMaxPrimitiveCounts, pSizeInfo);
-
-    m_FrameCaptureRecord->AddChunk(scope.Get());
-  }
 }
 
 //VK_KHR_deferred_host_operations
@@ -2703,45 +2600,12 @@ VkResult WrappedVulkan::vkCreateDeferredOperationKHR(VkDevice device,
   return ObjDisp(device)->CreateDeferredOperationKHR(Unwrap(device), pAllocator, pDeferredOperation);
 }
 
-template <typename SerialiserType>
- bool WrappedVulkan::Serialise_vkGetDeferredOperationMaxConcurrencyKHR(
-     SerialiserType &ser, VkDevice device,
-     VkDeferredOperationKHR operation)
- {
-  SERIALISE_ELEMENT(device);
-  SERIALISE_ELEMENT(operation);
-
-  SERIALISE_CHECK_READ_ERRORS();
-
-  if(IsReplayingAndReading())
-  {
-    ObjDisp(device)->GetDeferredOperationMaxConcurrencyKHR(Unwrap(device), operation);
-  }
-
-  return true;
- }
 
  uint32_t WrappedVulkan::vkGetDeferredOperationMaxConcurrencyKHR(VkDevice device, VkDeferredOperationKHR operation)
 {
   return ObjDisp(device)->GetDeferredOperationMaxConcurrencyKHR(Unwrap(device), operation);
  }
 
- template <typename SerialiserType>
- bool WrappedVulkan::Serialise_vkGetDeferredOperationResultKHR(
-     SerialiserType &ser, VkDevice device, VkDeferredOperationKHR operation)
- {
-  SERIALISE_ELEMENT(device);
-  SERIALISE_ELEMENT(operation);
-
-  SERIALISE_CHECK_READ_ERRORS();
-
-  if(IsReplayingAndReading())
-  {
-    ObjDisp(device)->GetDeferredOperationResultKHR(Unwrap(device), operation);
-  }
-
-  return true;
- }
 
  VkResult WrappedVulkan::vkGetDeferredOperationResultKHR(VkDevice device,
     VkDeferredOperationKHR operation)

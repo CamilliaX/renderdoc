@@ -928,7 +928,6 @@ enum class VulkanChunk : uint32_t
   vkCmdSetAttachmentFeedbackLoopEnableEXT,
   // raytracing
   vkCreateAccelerationStructureKHR,
-  vkDestroyAccelerationStructureKHR,
   vkCmdBuildAccelerationStructuresKHR,
   vkCmdBuildAccelerationStructuresIndirectKHR,
   vkBuildAccelerationStructuresKHR,
@@ -939,15 +938,9 @@ enum class VulkanChunk : uint32_t
   vkCmdCopyAccelerationStructureKHR,
   vkCmdCopyAccelerationStructureToMemoryKHR,
   vkCmdCopyMemoryToAccelerationStructureKHR,
-  vkGetAccelerationStructureDeviceAddressKHR,
   vkCmdWriteAccelerationStructuresPropertiesKHR,
-  vkGetDeviceAccelerationStructureCompatibilityKHR,
-  vkGetAccelerationStructureBuildSizesKHR,
   //DeferredOperation
   vkCreateDeferredOperationKHR,
-  vkDestroyDeferredOperationKHR,
-  vkGetDeferredOperationMaxConcurrencyKHR,
-  vkGetDeferredOperationResultKHR,
   vkDeferredOperationJoinKHR,
   Max,
 };

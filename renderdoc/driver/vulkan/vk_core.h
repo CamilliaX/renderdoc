@@ -2647,7 +2647,7 @@ public:
                                 const VkAllocationCallbacks *pAllocator,
                                 VkAccelerationStructureKHR *pAccelerationStructure);
 
-  IMPLEMENT_FUNCTION_SERIALISED(void, vkDestroyAccelerationStructureKHR, VkDevice device,
+  void vkDestroyAccelerationStructureKHR(VkDevice device,
                                 VkAccelerationStructureKHR accelerationStructure,
                                 const VkAllocationCallbacks *pAllocator);
 
@@ -2697,7 +2697,7 @@ public:
                                 VkCommandBuffer commandBuffer,
                                 const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo);
 
-  IMPLEMENT_FUNCTION_SERIALISED(VkDeviceAddress, vkGetAccelerationStructureDeviceAddressKHR,
+  VkDeviceAddress vkGetAccelerationStructureDeviceAddressKHR(
                                 VkDevice device, const VkAccelerationStructureDeviceAddressInfoKHR *pInfo);
 
   IMPLEMENT_FUNCTION_SERIALISED(void, vkCmdWriteAccelerationStructuresPropertiesKHR,
@@ -2705,11 +2705,11 @@ public:
                                 const VkAccelerationStructureKHR *pAccelerationStructures,
                                 VkQueryType queryType, VkQueryPool queryPool, uint32_t firstQuery);
 
-  IMPLEMENT_FUNCTION_SERIALISED(void, vkGetDeviceAccelerationStructureCompatibilityKHR,
+  void vkGetDeviceAccelerationStructureCompatibilityKHR(
                                 VkDevice device, const VkAccelerationStructureVersionInfoKHR *pVersionInfo,
                                 VkAccelerationStructureCompatibilityKHR *pCompatibility);
 
-  IMPLEMENT_FUNCTION_SERIALISED(void, vkGetAccelerationStructureBuildSizesKHR, VkDevice device,
+  void vkGetAccelerationStructureBuildSizesKHR(VkDevice device,
                                 VkAccelerationStructureBuildTypeKHR buildType,
                                 const VkAccelerationStructureBuildGeometryInfoKHR *pBuildInfo,
                                 const uint32_t *pMaxPrimitiveCounts,  VkAccelerationStructureBuildSizesInfoKHR * pSizeInfo);
@@ -2719,14 +2719,14 @@ public:
                                 const VkAllocationCallbacks *pAllocator,
                                 VkDeferredOperationKHR *pDeferredOperation);  
   
-  IMPLEMENT_FUNCTION_SERIALISED(void, vkDestroyDeferredOperationKHR, VkDevice device,
+  void vkDestroyDeferredOperationKHR(VkDevice device,
                                 VkDeferredOperationKHR operation,
                                 const VkAllocationCallbacks *pAllocator);  
   
-  IMPLEMENT_FUNCTION_SERIALISED(uint32_t, vkGetDeferredOperationMaxConcurrencyKHR, VkDevice device,
+  uint32_t vkGetDeferredOperationMaxConcurrencyKHR(VkDevice device,
                                 VkDeferredOperationKHR operation);  
   
-  IMPLEMENT_FUNCTION_SERIALISED(VkResult, vkGetDeferredOperationResultKHR, VkDevice device,
+  VkResult vkGetDeferredOperationResultKHR(VkDevice device,
                                 VkDeferredOperationKHR operation);
    
   IMPLEMENT_FUNCTION_SERIALISED(VkResult, vkDeferredOperationJoinKHR, VkDevice device,
