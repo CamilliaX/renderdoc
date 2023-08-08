@@ -2544,16 +2544,16 @@ bool WrappedVulkan::Serialise_vkCreateDeferredOperationKHR(
   SERIALISE_ELEMENT(device);
   SERIALISE_ELEMENT_OPT(pAllocator);
   SERIALISE_ELEMENT_LOCAL(operation, GetResID(*pDeferredOperation))
-      .TypedAs("vkDeferredOperationKHR"_lit);
+      .TypedAs("VkDeferredOperationKHR"_lit);
 
   SERIALISE_CHECK_READ_ERRORS();
 
   if(IsReplayingAndReading())
   {
-    vkDeferredOperationKHR do = VK_NULL_HANDLE;
+    VkDeferredOperationKHR dok = VK_NULL_HANDLE;
 
     VkResult ret =
-        ObjDisp(device)->CreateDeferredOperationKHR(Unwrap(device), NULL, &do);
+        ObjDisp(device)->CreateDeferredOperationKHR(Unwrap(device), NULL, &dok);
 
     if(ret != VK_SUCCESS)
     {
@@ -2565,13 +2565,13 @@ bool WrappedVulkan::Serialise_vkCreateDeferredOperationKHR(
     {
       ResourceId live;
 
-      if(GetResourceManager()->HasWrapper(ToTypedHandle(do)))
+      if(GetResourceManager()->HasWrapper(ToTypedHandle(dok)))
       {
-        live = GetResourceManager()->GetNonDispWrapper(do)->id;
+        live = GetResourceManager()->GetNonDispWrapper(dok)->id;
 
         // destroy this instance of the duplicate, as we must have matching create/destroy
         // calls and there won't be a wrapped resource hanging around to destroy this one.
-        ObjDisp(device)->DestroyDeferredOperationKHR(Unwrap(device), do, NULL);
+        ObjDisp(device)->DestroyDeferredOperationKHR(Unwrap(device), dok, NULL);
 
         // whenever the new ID is requested, return the old ID, via replacements.
         GetResourceManager()->ReplaceResource(operation,
@@ -2579,8 +2579,8 @@ bool WrappedVulkan::Serialise_vkCreateDeferredOperationKHR(
       }
       else
       {
-        live = GetResourceManager()->WrapResource(Unwrap(device), do);
-        GetResourceManager()->AddLiveResource(operation, do);
+        live = GetResourceManager()->WrapResource(Unwrap(device), dok);
+        GetResourceManager()->AddLiveResource(operation, dok);
 
         //m_CreationInfo.m_YCbCrSampler[live].Init(GetResourceManager(), m_CreationInfo, &CreateInfo);
       }
