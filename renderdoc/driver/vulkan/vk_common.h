@@ -982,7 +982,7 @@ DECLARE_REFLECTION_ENUM(VulkanChunk);
   SERIALISE_HANDLE(VkDescriptorUpdateTemplate) \
   SERIALISE_HANDLE(VkSamplerYcbcrConversion)   \
   SERIALISE_HANDLE(VkAccelerationStructureKHR)  \
-  SERIALISE_HANDLE(VkDeferredOperationKHR)  \
+  SERIALISE_HANDLE(VkDeferredOperationKHR)  
 
 
 #define SERIALISE_HANDLE(type) DECLARE_REFLECTION_STRUCT(type)
@@ -1839,7 +1839,6 @@ DECLARE_DESERIALISE_TYPE(VkAccelerationStructureBuildRangeInfoKHR);
 DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryTrianglesDataKHR);
 DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryAabbsDataKHR);
 DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryInstancesDataKHR);
-//DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryDataKHR);
 DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryKHR);
 DECLARE_DESERIALISE_TYPE(VkAccelerationStructureBuildGeometryInfoKHR);
 DECLARE_DESERIALISE_TYPE(VkAccelerationStructureCreateInfoKHR);

@@ -2550,7 +2550,7 @@ bool WrappedVulkan::Serialise_vkCreateDeferredOperationKHR(
 
   if(IsReplayingAndReading())
   {
-    vkCreateDeferredOperationKHR do = VK_NULL_HANDLE;
+    vkDeferredOperationKHR do = VK_NULL_HANDLE;
 
     VkResult ret =
         ObjDisp(device)->CreateDeferredOperationKHR(Unwrap(device), NULL, &do);
@@ -3533,3 +3533,7 @@ INSTANTIATE_FUNCTION_SERIALISED(VkResult, vkCreateAccelerationStructureKHR, VkDe
 
 INSTANTIATE_FUNCTION_SERIALISED(VkResult, vkResetQueryPool, VkDevice device, VkQueryPool queryPool,
                                 uint32_t firstQuery, uint32_t queryCount);
+
+ INSTANTIATE_FUNCTION_SERIALISED(VkResult, vkCreateDeferredOperationKHR, VkDevice device,
+                              const VkAllocationCallbacks *pAllocator,
+                              VkDeferredOperationKHR *pDeferredOperation);
