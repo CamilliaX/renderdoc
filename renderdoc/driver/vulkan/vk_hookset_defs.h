@@ -548,7 +548,9 @@
   DeclExt(EXT_pageable_device_local_memory);          \
   DeclExt(EXT_swapchain_maintenance1);                \
   DeclExt(EXT_provoking_vertex);                      \
-  DeclExt(EXT_attachment_feedback_loop_dynamic_state);
+  DeclExt(EXT_attachment_feedback_loop_dynamic_state);   \
+  DeclExt(KHR_acceleration_structure);  
+
 
 // for simplicity and since the check itself is platform agnostic,
 // these aren't protected in platform defines
@@ -667,7 +669,9 @@
   CheckExt(EXT_pageable_device_local_memory, VKXX);          \
   CheckExt(EXT_swapchain_maintenance1, VKXX);                \
   CheckExt(EXT_provoking_vertex, VKXX);                      \
-  CheckExt(EXT_attachment_feedback_loop_dynamic_state, VKXX);
+  CheckExt(EXT_attachment_feedback_loop_dynamic_state, VKXX);  \
+  CheckExt(KHR_acceleration_structure, VKXX);  
+
 
 #define HookInitVulkanInstanceExts_PhysDev()                                                         \
   HookInitExtension(KHR_surface, GetPhysicalDeviceSurfaceSupportKHR);                                \
@@ -931,6 +935,8 @@
   HookInitExtension(EXT_swapchain_maintenance1, ReleaseSwapchainImagesEXT);                        \
   HookInitExtension(EXT_attachment_feedback_loop_dynamic_state,                                    \
                     CmdSetAttachmentFeedbackLoopEnableEXT);                                        \
+  HookInitExtension(KHR_acceleration_structure, GetDeviceAccelerationStructureCompatibilityKHR);   \
+  HookInitExtension(KHR_acceleration_structure, GetAccelerationStructureBuildSizesKHR);              \
   HookInitExtension_Device_Win32();                                                                \
   HookInitExtension_Device_Linux();                                                                \
   HookInitExtension_Device_GGP();                                                                  \
@@ -1659,6 +1665,13 @@
               const VkReleaseSwapchainImagesInfoEXT *, pReleaseInfo);                                \
   HookDefine2(void, vkCmdSetAttachmentFeedbackLoopEnableEXT, VkCommandBuffer, commandBuffer,         \
               VkImageAspectFlags, aspectMask);                                                       \
+  HookDefine3(void, vkGetDeviceAccelerationStructureCompatibilityKHR, VkDevice, device,              \
+              const VkAccelerationStructureVersionInfoKHR *, pVersionInfo,                           \
+              VkAccelerationStructureCompatibilityKHR *, pCompatibility);                            \
+  HookDefine5(void, vkGetAccelerationStructureBuildSizesKHR, VkDevice, device,                       \
+              VkAccelerationStructureBuildTypeKHR, buildType,                                        \
+              const VkAccelerationStructureBuildGeometryInfoKHR *, pBuildInfo, const uint32_t *,     \
+              pMaxPrimitiveCounts, VkAccelerationStructureBuildSizesInfoKHR *, pSizeInfo); \
   HookDefine_Win32();                                                                                \
   HookDefine_Linux();                                                                                \
   HookDefine_GGP();                                                                                  \

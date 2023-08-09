@@ -2639,4 +2639,16 @@ public:
   // VK_EXT_attachment_feedback_loop_dynamic_state
   IMPLEMENT_FUNCTION_SERIALISED(void, vkCmdSetAttachmentFeedbackLoopEnableEXT,
                                 VkCommandBuffer commandBuffer, VkImageAspectFlags aspectMask);
+
+    // VK_KHR_acceleration_structure
+  void vkGetDeviceAccelerationStructureCompatibilityKHR(
+      VkDevice device, const VkAccelerationStructureVersionInfoKHR *pVersionInfo,
+      VkAccelerationStructureCompatibilityKHR *pCompatibility);
+
+  void vkGetAccelerationStructureBuildSizesKHR(
+      VkDevice device, VkAccelerationStructureBuildTypeKHR buildType,
+      const VkAccelerationStructureBuildGeometryInfoKHR *pBuildInfo,
+      const uint32_t *pMaxPrimitiveCounts, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo);
+
+
 };

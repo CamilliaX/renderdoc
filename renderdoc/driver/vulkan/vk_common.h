@@ -964,7 +964,8 @@ DECLARE_REFLECTION_ENUM(VulkanChunk);
   SERIALISE_HANDLE(VkSwapchainKHR)             \
   SERIALISE_HANDLE(VkSurfaceKHR)               \
   SERIALISE_HANDLE(VkDescriptorUpdateTemplate) \
-  SERIALISE_HANDLE(VkSamplerYcbcrConversion)
+  SERIALISE_HANDLE(VkSamplerYcbcrConversion)  \
+  SERIALISE_HANDLE(VkAccelerationStructureKHR)
 
 #define SERIALISE_HANDLE(type) DECLARE_REFLECTION_STRUCT(type)
 
@@ -973,6 +974,13 @@ SERIALISE_VK_HANDLES();
 // declare reflect-able types
 
 // pNext structs - always have deserialise for the next chain
+DECLARE_REFLECTION_STRUCT(VkAccelerationStructureBuildGeometryInfoKHR);
+DECLARE_REFLECTION_STRUCT(VkAccelerationStructureGeometryAabbsDataKHR);
+DECLARE_REFLECTION_STRUCT(VkAccelerationStructureGeometryInstancesDataKHR);
+DECLARE_REFLECTION_STRUCT(VkAccelerationStructureGeometryKHR);
+DECLARE_REFLECTION_STRUCT(VkAccelerationStructureGeometryTrianglesDataKHR);
+DECLARE_REFLECTION_STRUCT(VkAccelerationStructureVersionInfoKHR);
+DECLARE_REFLECTION_STRUCT(VkAccelerationStructureBuildSizesInfoKHR);
 DECLARE_REFLECTION_STRUCT(VkAcquireNextImageInfoKHR);
 DECLARE_REFLECTION_STRUCT(VkAcquireProfilingLockInfoKHR);
 DECLARE_REFLECTION_STRUCT(VkApplicationInfo);
@@ -1392,6 +1400,13 @@ DECLARE_REFLECTION_STRUCT(VkVertexInputBindingDescription2EXT);
 DECLARE_REFLECTION_STRUCT(VkWriteDescriptorSet);
 DECLARE_REFLECTION_STRUCT(VkWriteDescriptorSetInlineUniformBlock);
 
+DECLARE_DESERIALISE_TYPE(VkAccelerationStructureBuildGeometryInfoKHR);
+DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryAabbsDataKHR);
+DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryInstancesDataKHR);
+DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryKHR);
+DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryTrianglesDataKHR);
+DECLARE_DESERIALISE_TYPE(VkAccelerationStructureVersionInfoKHR);
+DECLARE_DESERIALISE_TYPE(VkAccelerationStructureBuildSizesInfoKHR);
 DECLARE_DESERIALISE_TYPE(VkAcquireNextImageInfoKHR);
 DECLARE_DESERIALISE_TYPE(VkAcquireProfilingLockInfoKHR);
 DECLARE_DESERIALISE_TYPE(VkApplicationInfo);
@@ -1803,6 +1818,7 @@ DECLARE_DESERIALISE_TYPE(VkWriteDescriptorSet);
 DECLARE_DESERIALISE_TYPE(VkWriteDescriptorSetInlineUniformBlock);
 
 // plain structs with no next chain
+DECLARE_REFLECTION_STRUCT(VkAccelerationStructureGeometryDataKHR);
 DECLARE_REFLECTION_STRUCT(VkAllocationCallbacks);
 DECLARE_REFLECTION_STRUCT(VkAttachmentDescription);
 DECLARE_REFLECTION_STRUCT(VkAttachmentReference);
@@ -1820,6 +1836,8 @@ DECLARE_REFLECTION_STRUCT(VkDescriptorImageInfo);
 DECLARE_REFLECTION_STRUCT(VkDescriptorPoolSize);
 DECLARE_REFLECTION_STRUCT(VkDescriptorSetLayoutBinding);
 DECLARE_REFLECTION_STRUCT(VkDescriptorUpdateTemplateEntry);
+DECLARE_REFLECTION_STRUCT(VkDeviceOrHostAddressConstKHR);
+DECLARE_REFLECTION_STRUCT(VkDeviceOrHostAddressKHR);
 DECLARE_REFLECTION_STRUCT(VkDispatchIndirectCommand);
 DECLARE_REFLECTION_STRUCT(VkDisplayModeParametersKHR);
 DECLARE_REFLECTION_STRUCT(VkDisplayModePropertiesKHR);
