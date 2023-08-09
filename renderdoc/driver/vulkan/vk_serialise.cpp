@@ -8346,14 +8346,16 @@ template <typename SerialiserType>
 void DoSerialise(SerialiserType &ser, VkDeviceOrHostAddressConstKHR &el)
 {
   SERIALISE_MEMBER(deviceAddress);
-  SERIALISE_MEMBER(hostAddress);
+  uint64_t hostAdress = (uint64_t)el.hostAddress;
+  ser.Serialise("hostAddress"_lit, hostAdress).TypedAs("void*"_lit);
 }
 
 template <typename SerialiserType>
 void DoSerialise(SerialiserType &ser, VkDeviceOrHostAddressKHR &el)
 {
   SERIALISE_MEMBER(deviceAddress);
-  SERIALISE_MEMBER(hostAddress);
+  uint64_t hostAdress = (uint64_t)el.hostAddress;
+  ser.Serialise("hostAddress"_lit, hostAdress).TypedAs("void*"_lit);
 }
 
 template <typename SerialiserType>
@@ -8450,6 +8452,21 @@ template <>
 void Deserialise(const VkAccelerationStructureBuildGeometryInfoKHR &el)
 {
   DeserialiseNext(el.pNext);
+  if(el.pGeometries != nullptr)
+  {
+    for(uint32_t i = 0; i < el.geometryCount; ++i)
+    {
+      Deserialise(el.pGeometries[i]);
+    }
+  }
+  if(el.ppGeometries != nullptr)
+  {
+    for(uint32_t i = 0; i < el.geometryCount; ++i)
+    {
+      Deserialise(*el.ppGeometries[i]);
+    }
+    delete[] el.ppGeometries;
+  }
 }
 
 template <typename SerialiserType>
@@ -8462,14 +8479,23 @@ void DoSerialise(SerialiserType &ser, VkAccelerationStructureBuildGeometryInfoKH
   SERIALISE_MEMBER(type);
   SERIALISE_MEMBER_VKFLAGS(VkBuildAccelerationStructureFlagsKHR, flags);
   SERIALISE_MEMBER(mode);
-  SERIALISE_MEMBER(srcAccelerationStructure);
+  SERIALISE_MEMBER(srcAccelerationStructure).Important();
   SERIALISE_MEMBER(dstAccelerationStructure);
   SERIALISE_MEMBER(geometryCount);
-  SERIALISE_MEMBER_ARRAY(pGeometries, geometryCount);
-  SERIALISE_MEMBER_ARRAY(ppGeometries, geometryCount);
+
+  if(el.pGeometries != nullptr)
+  {
+    SERIALISE_MEMBER_ARRAY(pGeometries, geometryCount);
+  }
+  else
+  {
+    const VkAccelerationStructureGeometryKHR *Geometries = *el.ppGeometries;
+    ser.Serialise("ppGeometries"_lit, Geometries, el.geometryCount, SerialiserFlags::AllocateMemory)
+        .TypedAs("VkAccelerationStructureGeometryKHR"_lit);
+  }
+
   SERIALISE_MEMBER(scratchData);
 }
-
 
 template <>
 void Deserialise(const VkAccelerationStructureCreateInfoKHR &el)
@@ -8580,7 +8606,9 @@ void DoSerialise(SerialiserType &ser, VkAccelerationStructureVersionInfoKHR &el)
   RDCASSERT(ser.IsReading() || el.sType == VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_VERSION_INFO_KHR);
   SerialiseNext(ser, el.sType, el.pNext);
 
-  SERIALISE_MEMBER(pVersionData);
+  SerialiseNext(ser, el.sType, el.pNext);
+  uint64_t version = (uint64_t)el.pVersionData;
+  ser.Serialise("pVersionData"_lit, version).TypedAs("uint8_t*"_lit);
 }
 
 template <>
