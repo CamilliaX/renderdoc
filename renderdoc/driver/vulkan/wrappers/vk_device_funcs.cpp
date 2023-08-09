@@ -3112,6 +3112,67 @@ bool WrappedVulkan::Serialise_vkCreateDevice(SerialiserType &ser, VkPhysicalDevi
         CHECK_PHYS_EXT_FEATURE(sampler2DViewOf3D);
       }
       END_PHYS_EXT_CHECK();
+
+      // AS
+      BEGIN_PHYS_EXT_CHECK(VkPhysicalDeviceAccelerationStructureFeaturesKHR,
+                           VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR);
+      {
+        CHECK_PHYS_EXT_FEATURE(accelerationStructure);
+        CHECK_PHYS_EXT_FEATURE(accelerationStructureCaptureReplay);
+        CHECK_PHYS_EXT_FEATURE(accelerationStructureIndirectBuild);
+        CHECK_PHYS_EXT_FEATURE(accelerationStructureHostCommands);
+        CHECK_PHYS_EXT_FEATURE(descriptorBindingAccelerationStructureUpdateAfterBind);
+      }
+      END_PHYS_EXT_CHECK();
+
+      BEGIN_PHYS_EXT_CHECK(VkPhysicalDeviceAccelerationStructurePropertiesKHR,
+                           VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_PROPERTIES_KHR);
+      {
+        CHECK_PHYS_EXT_FEATURE(maxGeometryCount);
+        CHECK_PHYS_EXT_FEATURE(maxInstanceCount);
+        CHECK_PHYS_EXT_FEATURE(maxPrimitiveCount);
+        CHECK_PHYS_EXT_FEATURE(maxPerStageDescriptorAccelerationStructures);
+        CHECK_PHYS_EXT_FEATURE(maxPerStageDescriptorUpdateAfterBindAccelerationStructures);
+        CHECK_PHYS_EXT_FEATURE(maxDescriptorSetAccelerationStructures);
+        CHECK_PHYS_EXT_FEATURE(maxDescriptorSetUpdateAfterBindAccelerationStructures);
+        CHECK_PHYS_EXT_FEATURE(minAccelerationStructureScratchOffsetAlignment);
+      }
+      END_PHYS_EXT_CHECK();
+
+      // RayTracingPipeline
+      BEGIN_PHYS_EXT_CHECK(VkPhysicalDeviceRayTracingPipelineFeaturesKHR,
+                           VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR);
+      {
+        CHECK_PHYS_EXT_FEATURE(rayTracingPipeline);
+        CHECK_PHYS_EXT_FEATURE(rayTracingPipelineShaderGroupHandleCaptureReplay);
+        CHECK_PHYS_EXT_FEATURE(rayTracingPipelineShaderGroupHandleCaptureReplayMixed);
+        CHECK_PHYS_EXT_FEATURE(rayTracingPipelineTraceRaysIndirect);
+        CHECK_PHYS_EXT_FEATURE(rayTraversalPrimitiveCulling);
+      }
+      END_PHYS_EXT_CHECK();
+
+      BEGIN_PHYS_EXT_CHECK(VkPhysicalDeviceRayTracingPipelinePropertiesKHR,
+                           VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR);
+      {
+        CHECK_PHYS_EXT_FEATURE(shaderGroupHandleSize);
+        CHECK_PHYS_EXT_FEATURE(maxRayRecursionDepth);
+        CHECK_PHYS_EXT_FEATURE(maxShaderGroupStride);
+        CHECK_PHYS_EXT_FEATURE(shaderGroupBaseAlignment);
+        CHECK_PHYS_EXT_FEATURE(shaderGroupHandleCaptureReplaySize);
+        CHECK_PHYS_EXT_FEATURE(maxRayDispatchInvocationCount);
+        CHECK_PHYS_EXT_FEATURE(shaderGroupHandleAlignment);
+        CHECK_PHYS_EXT_FEATURE(maxRayHitAttributeSize);
+      }
+      END_PHYS_EXT_CHECK();
+
+      // RayQuery
+      BEGIN_PHYS_EXT_CHECK(VkPhysicalDeviceRayQueryFeaturesKHR,
+                           VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_QUERY_FEATURES_KHR);
+      {
+        CHECK_PHYS_EXT_FEATURE(rayQuery);
+      }
+      END_PHYS_EXT_CHECK();
+
     }
 
     if(availFeatures.depthClamp)
