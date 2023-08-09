@@ -167,6 +167,11 @@ DECL_VKFLAG_EXT(VkGraphicsPipelineLibrary, EXT);
 DECL_VKFLAG(VkRendering);
 DECL_VKFLAG_EXT(VkPresentScaling, EXT);
 DECL_VKFLAG_EXT(VkPresentGravity, EXT);
+// AS
+DECL_VKFLAG_EXT(VkAccelerationStructureCreate, KHR);
+DECL_VKFLAG_EXT(VkBuildAccelerationStructure, KHR);
+// NVRT
+DECL_VKFLAG_EXT(VkGeometry, KHR);
 
 // serialise a member as flags - cast to the Bits enum for serialisation so the stringification
 // picks up the bitfield and doesn't treat it as uint32_t. Then we rename the type back to the base
