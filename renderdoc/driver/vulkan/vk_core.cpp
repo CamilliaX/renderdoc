@@ -3741,6 +3741,9 @@ bool WrappedVulkan::ProcessChunk(ReadSerialiser &ser, VulkanChunk chunk)
       return Serialise_vkCmdSetAttachmentFeedbackLoopEnableEXT(ser, VK_NULL_HANDLE,
                                                                VK_IMAGE_ASPECT_NONE);
 
+    case VulkanChunk::vkCreateAccelerationStructureKHR:
+      return Serialise_vkCreateAccelerationStructureKHR(ser, VK_NULL_HANDLE, NULL, NULL, NULL);
+
     // chunks that are reserved but not yet serialised
     case VulkanChunk::vkResetCommandPool:
     case VulkanChunk::vkCreateDepthTargetView:

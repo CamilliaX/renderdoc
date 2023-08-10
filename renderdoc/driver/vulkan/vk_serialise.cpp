@@ -1404,6 +1404,8 @@ SERIALISE_VK_HANDLES();
   PNEXT_STRUCT(VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_AABBS_DATA_KHR, VkAccelerationStructureGeometryAabbsDataKHR)                                            \
   PNEXT_STRUCT(VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_INSTANCES_DATA_KHR, VkAccelerationStructureGeometryInstancesDataKHR)                                        \
   PNEXT_STRUCT(VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_GEOMETRY_TRIANGLES_DATA_KHR, VkAccelerationStructureGeometryTrianglesDataKHR)                                        \
+  PNEXT_STRUCT(VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR, VkAccelerationStructureDeviceAddressInfoKHR)                                            \
+  PNEXT_STRUCT(VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_KHR, VkAccelerationStructureCreateInfoKHR)                                                   \
                                                                                                        \
   /* VK_KHR_ray_tracing_pipeline */                                                                    \
   PNEXT_STRUCT(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_FEATURES_KHR, VkPhysicalDeviceRayTracingPipelineFeaturesKHR)                                          \
@@ -1625,8 +1627,6 @@ SERIALISE_VK_HANDLES();
   PNEXT_UNSUPPORTED(VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_SHADER_INTEGER_FUNCTIONS_2_FEATURES_INTEL)       \
                                                                                                        \
   /* VK_KHR_acceleration_structure */                                                                  \
-  PNEXT_UNSUPPORTED(VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_KHR)                          \
-  PNEXT_UNSUPPORTED(VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR)                  \
   PNEXT_UNSUPPORTED(VK_STRUCTURE_TYPE_COPY_ACCELERATION_STRUCTURE_INFO_KHR)                            \
   PNEXT_UNSUPPORTED(VK_STRUCTURE_TYPE_COPY_ACCELERATION_STRUCTURE_TO_MEMORY_INFO_KHR)                  \
   PNEXT_UNSUPPORTED(VK_STRUCTURE_TYPE_COPY_MEMORY_TO_ACCELERATION_STRUCTURE_INFO_KHR)                  \
@@ -11506,6 +11506,42 @@ void Deserialise(const VkAccelerationStructureBuildSizesInfoKHR &el)
   DeserialiseNext(el.pNext);
 }
 
+template <typename SerialiserType>
+void DoSerialise(SerialiserType &ser, VkAccelerationStructureDeviceAddressInfoKHR &el)
+{
+  RDCASSERT(ser.IsReading() ||
+            el.sType == VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_DEVICE_ADDRESS_INFO_KHR);
+  SerialiseNext(ser, el.sType, el.pNext);
+
+  SERIALISE_MEMBER(accelerationStructure);
+}
+
+template <>
+void Deserialise(const VkAccelerationStructureDeviceAddressInfoKHR &el)
+{
+  DeserialiseNext(el.pNext);
+}
+
+template <typename SerialiserType>
+void DoSerialise(SerialiserType &ser, VkAccelerationStructureCreateInfoKHR &el)
+{
+  RDCASSERT(ser.IsReading() || el.sType == VK_STRUCTURE_TYPE_ACCELERATION_STRUCTURE_CREATE_INFO_KHR);
+  SerialiseNext(ser, el.sType, el.pNext);
+
+  SERIALISE_MEMBER_VKFLAGS(VkAccelerationStructureCreateFlagsKHR, createFlags);
+  SERIALISE_MEMBER(buffer);
+  SERIALISE_MEMBER(offset);
+  SERIALISE_MEMBER(size);
+  SERIALISE_MEMBER(type);
+  SERIALISE_MEMBER(deviceAddress);
+}
+
+template <>
+void Deserialise(const VkAccelerationStructureCreateInfoKHR &el)
+{
+  DeserialiseNext(el.pNext);
+}
+
 // RayTracingPipeline
 template <typename SerialiserType>
 void DoSerialise(SerialiserType &ser, VkPhysicalDeviceRayTracingPipelineFeaturesKHR &el)
@@ -11570,6 +11606,8 @@ void Deserialise(const VkPhysicalDeviceRayQueryFeaturesKHR &el)
 
 INSTANTIATE_SERIALISE_TYPE(VkAccelerationStructureBuildGeometryInfoKHR);
 INSTANTIATE_SERIALISE_TYPE(VkAccelerationStructureBuildSizesInfoKHR);
+INSTANTIATE_SERIALISE_TYPE(VkAccelerationStructureCreateInfoKHR);
+INSTANTIATE_SERIALISE_TYPE(VkAccelerationStructureDeviceAddressInfoKHR);
 INSTANTIATE_SERIALISE_TYPE(VkAccelerationStructureGeometryAabbsDataKHR);
 INSTANTIATE_SERIALISE_TYPE(VkAccelerationStructureGeometryInstancesDataKHR);
 INSTANTIATE_SERIALISE_TYPE(VkAccelerationStructureGeometryKHR);

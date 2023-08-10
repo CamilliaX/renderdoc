@@ -2480,6 +2480,17 @@ void DescUpdateTemplate::Init(VulkanResourceManager *resourceMan, VulkanCreation
   }
 }
 
+void VulkanCreationInfo::AccelerationStructure::Init(VulkanResourceManager *resourceMan, VulkanCreationInfo &info,
+                             const VkAccelerationStructureCreateInfoKHR *pCreateInfo)
+{
+  createFlags = pCreateInfo->createFlags;
+  buffer = pCreateInfo->buffer;
+  offset = pCreateInfo->offset;
+  size = pCreateInfo->size;
+  type = pCreateInfo->type;
+  deviceAddress = pCreateInfo->deviceAddress;
+}
+
 void DescUpdateTemplate::Apply(const void *pData, DescUpdateTemplateApplication &application)
 {
   application.bufView.reserve(texelBufferViewCount);

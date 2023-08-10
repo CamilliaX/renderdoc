@@ -937,6 +937,7 @@
                     CmdSetAttachmentFeedbackLoopEnableEXT);                                        \
   HookInitExtension(KHR_acceleration_structure, GetDeviceAccelerationStructureCompatibilityKHR);   \
   HookInitExtension(KHR_acceleration_structure, GetAccelerationStructureBuildSizesKHR);              \
+  HookInitExtension(KHR_acceleration_structure, CreateAccelerationStructureKHR);                   \
   HookInitExtension_Device_Win32();                                                                \
   HookInitExtension_Device_Linux();                                                                \
   HookInitExtension_Device_GGP();                                                                  \
@@ -1665,6 +1666,12 @@
               const VkReleaseSwapchainImagesInfoEXT *, pReleaseInfo);                                \
   HookDefine2(void, vkCmdSetAttachmentFeedbackLoopEnableEXT, VkCommandBuffer, commandBuffer,         \
               VkImageAspectFlags, aspectMask);                                                       \
+HookDefine4(VkResult, vkCreateAccelerationStructureKHR, VkDevice, device,                          \
+              const VkAccelerationStructureCreateInfoKHR *, pCreateInfo,                             \
+              const VkAllocationCallbacks *, pAllocator, VkAccelerationStructureKHR *,               \
+              pAccelerationStructure);                                                               \
+  HookDefine2(VkDeviceAddress, vkGetAccelerationStructureDeviceAddressKHR, VkDevice, device,         \
+              const VkAccelerationStructureDeviceAddressInfoKHR *, pInfo);                           \
   HookDefine3(void, vkGetDeviceAccelerationStructureCompatibilityKHR, VkDevice, device,              \
               const VkAccelerationStructureVersionInfoKHR *, pVersionInfo,                           \
               VkAccelerationStructureCompatibilityKHR *, pCompatibility);                            \

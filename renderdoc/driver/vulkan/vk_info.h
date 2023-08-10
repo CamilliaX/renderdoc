@@ -786,6 +786,21 @@ struct VulkanCreationInfo
   };
   std::unordered_map<ResourceId, QueryPool> m_QueryPool;
 
+  struct AccelerationStructure
+  {
+    void Init(VulkanResourceManager *resourceMan, VulkanCreationInfo &info,
+              const VkAccelerationStructureCreateInfoKHR *pCreateInfo);
+
+    VkAccelerationStructureCreateFlagsKHR createFlags;
+    VkBuffer buffer;
+    VkDeviceSize offset;
+    VkDeviceSize size;
+    VkAccelerationStructureTypeKHR type;
+    VkDeviceAddress deviceAddress;
+  };
+  std::unordered_map<ResourceId, AccelerationStructure> m_AccelerationStructure;
+
+
   std::unordered_map<ResourceId, rdcstr> m_Names;
   std::unordered_map<ResourceId, SwapchainInfo> m_SwapChain;
   std::unordered_map<ResourceId, DescSetLayout> m_DescSetLayout;

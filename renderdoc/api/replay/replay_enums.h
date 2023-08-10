@@ -680,6 +680,8 @@ enum class ResourceType : uint32_t
   Query,
   Sync,
   Pool,
+
+  AccelerationStructure,
 };
 
 DECLARE_REFLECTION_ENUM(ResourceType);

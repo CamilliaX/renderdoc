@@ -926,6 +926,7 @@ enum class VulkanChunk : uint32_t
   vkCmdSetFragmentShadingRateKHR,
   vkSetDeviceMemoryPriorityEXT,
   vkCmdSetAttachmentFeedbackLoopEnableEXT,
+  vkCreateAccelerationStructureKHR,
   Max,
 };
 
@@ -975,6 +976,8 @@ SERIALISE_VK_HANDLES();
 
 // pNext structs - always have deserialise for the next chain
 DECLARE_REFLECTION_STRUCT(VkAccelerationStructureBuildGeometryInfoKHR);
+DECLARE_REFLECTION_STRUCT(VkAccelerationStructureCreateInfoKHR);
+DECLARE_REFLECTION_STRUCT(VkAccelerationStructureDeviceAddressInfoKHR);
 DECLARE_REFLECTION_STRUCT(VkAccelerationStructureGeometryAabbsDataKHR);
 DECLARE_REFLECTION_STRUCT(VkAccelerationStructureGeometryInstancesDataKHR);
 DECLARE_REFLECTION_STRUCT(VkAccelerationStructureGeometryKHR);
@@ -1401,6 +1404,8 @@ DECLARE_REFLECTION_STRUCT(VkWriteDescriptorSet);
 DECLARE_REFLECTION_STRUCT(VkWriteDescriptorSetInlineUniformBlock);
 
 DECLARE_DESERIALISE_TYPE(VkAccelerationStructureBuildGeometryInfoKHR);
+DECLARE_DESERIALISE_TYPE(VkAccelerationStructureCreateInfoKHR);
+DECLARE_DESERIALISE_TYPE(VkAccelerationStructureDeviceAddressInfoKHR);
 DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryAabbsDataKHR);
 DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryInstancesDataKHR);
 DECLARE_DESERIALISE_TYPE(VkAccelerationStructureGeometryKHR);

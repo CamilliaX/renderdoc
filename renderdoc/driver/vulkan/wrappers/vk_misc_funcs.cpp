@@ -2639,6 +2639,97 @@ void WrappedVulkan::vkGetPrivateData(VkDevice device, VkObjectType objectType, u
 }
 
 // AS
+template <typename SerialiserType>
+bool WrappedVulkan::Serialise_vkCreateAccelerationStructureKHR(
+    SerialiserType &ser, VkDevice device, const VkAccelerationStructureCreateInfoKHR *pCreateInfo,
+    const VkAllocationCallbacks *pAllocator, VkAccelerationStructureKHR *pAccelerationStructure)
+{
+  SERIALISE_ELEMENT(device);
+  SERIALISE_ELEMENT_LOCAL(CreateInfo, *pCreateInfo).Important();
+  SERIALISE_ELEMENT_OPT(pAllocator);
+  SERIALISE_ELEMENT_LOCAL(accelerationStructure, GetResID(*pAccelerationStructure))
+      .TypedAs("VkAccelerationStructureKHR"_lit);
+
+  SERIALISE_CHECK_READ_ERRORS();
+
+  if(IsReplayingAndReading())
+  {
+    VkAccelerationStructureKHR as = VK_NULL_HANDLE;
+
+    VkResult ret =
+        ObjDisp(device)->CreateAccelerationStructureKHR(Unwrap(device), &CreateInfo, NULL, &as);
+
+    if(ret != VK_SUCCESS)
+    {
+      SET_ERROR_RESULT(m_FailedReplayResult, ResultCode::APIReplayFailed,
+                       "Error creating acceleration structure, VkResult: %s", ToStr(ret).c_str());
+      return false;
+    }
+    else
+    {
+      ResourceId live;
+      live = GetResourceManager()->WrapResource(Unwrap(device), as);
+      GetResourceManager()->AddLiveResource(accelerationStructure, as);
+
+      m_CreationInfo.m_AccelerationStructure[live].Init(GetResourceManager(), m_CreationInfo,
+                                                        &CreateInfo);
+    }
+
+    AddResource(accelerationStructure, ResourceType::AccelerationStructure, "Acceleration Structure");
+    DerivedResource(device, accelerationStructure);
+  }
+    return true;
+}
+
+VkResult WrappedVulkan::vkCreateAccelerationStructureKHR(
+    VkDevice device, const VkAccelerationStructureCreateInfoKHR *pCreateInfo,
+    const VkAllocationCallbacks *pAllocator, VkAccelerationStructureKHR *pAccelerationStructure)
+{
+  VkResult ret;
+    {
+    WriteSerialiser &ser = GetThreadSerialiser();
+    ser.ChunkMetadata().timestampMicro = Timing::GetTick();
+    ret = ObjDisp(device)->CreateAccelerationStructureKHR(Unwrap(device), pCreateInfo, pAllocator,
+                                                          pAccelerationStructure);
+    ser.ChunkMetadata().durationMicro = Timing::GetTick() - ser.ChunkMetadata().timestampMicro;
+    };
+
+  if(ret == VK_SUCCESS)
+  {
+    ResourceId id = GetResourceManager()->WrapResource(Unwrap(device), *pAccelerationStructure);
+
+    if(IsCaptureMode(m_State))
+    {
+      Chunk *chunk = NULL;
+
+      {
+        CACHE_THREAD_SERIALISER();
+
+        SCOPED_SERIALISE_CHUNK(VulkanChunk::vkCreateAccelerationStructureKHR);
+        Serialise_vkCreateAccelerationStructureKHR(ser, device, pCreateInfo, NULL,
+                                                   pAccelerationStructure);
+
+        chunk = scope.Get();
+      }
+
+      VkResourceRecord *record = GetResourceManager()->AddResourceRecord(*pAccelerationStructure);
+      record->AddChunk(chunk);
+
+    }
+    else
+    {
+      GetResourceManager()->AddLiveResource(id, *pAccelerationStructure);
+    }
+  }
+  return ret;
+}
+
+VkDeviceAddress WrappedVulkan::vkGetAccelerationStructureDeviceAddressKHR(
+    VkDevice device, const VkAccelerationStructureDeviceAddressInfoKHR *pInfo)
+{
+  return (ObjDisp(device)->GetAccelerationStructureDeviceAddressKHR(Unwrap(device), pInfo));
+}
+
 void WrappedVulkan::vkGetDeviceAccelerationStructureCompatibilityKHR(
     VkDevice device, const VkAccelerationStructureVersionInfoKHR *pVersionInfo,
     VkAccelerationStructureCompatibilityKHR *pCompatibility)
@@ -2692,3 +2783,8 @@ INSTANTIATE_FUNCTION_SERIALISED(VkResult, vkCreateSamplerYcbcrConversion, VkDevi
 
 INSTANTIATE_FUNCTION_SERIALISED(VkResult, vkResetQueryPool, VkDevice device, VkQueryPool queryPool,
                                 uint32_t firstQuery, uint32_t queryCount);
+
+INSTANTIATE_FUNCTION_SERIALISED(VkResult, vkCreateAccelerationStructureKHR, VkDevice device,
+                                const VkAccelerationStructureCreateInfoKHR *pCreateInfo,
+                                const VkAllocationCallbacks *pAllocator,
+                                VkAccelerationStructureKHR *pAccelerationStructure);

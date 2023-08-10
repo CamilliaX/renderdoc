@@ -2641,6 +2641,11 @@ public:
                                 VkCommandBuffer commandBuffer, VkImageAspectFlags aspectMask);
 
     // VK_KHR_acceleration_structure
+  IMPLEMENT_FUNCTION_SERIALISED(VkResult, vkCreateAccelerationStructureKHR, VkDevice device,
+                                const VkAccelerationStructureCreateInfoKHR *pCreateInfo,
+                                const VkAllocationCallbacks *pAllocator,
+                                VkAccelerationStructureKHR *pAccelerationStructure);
+
   void vkGetDeviceAccelerationStructureCompatibilityKHR(
       VkDevice device, const VkAccelerationStructureVersionInfoKHR *pVersionInfo,
       VkAccelerationStructureCompatibilityKHR *pCompatibility);
@@ -2650,5 +2655,7 @@ public:
       const VkAccelerationStructureBuildGeometryInfoKHR *pBuildInfo,
       const uint32_t *pMaxPrimitiveCounts, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo);
 
+   VkDeviceAddress  vkGetAccelerationStructureDeviceAddressKHR(
+      VkDevice device, const VkAccelerationStructureDeviceAddressInfoKHR *pInfo);
 
 };
