@@ -935,9 +935,11 @@
   HookInitExtension(EXT_swapchain_maintenance1, ReleaseSwapchainImagesEXT);                        \
   HookInitExtension(EXT_attachment_feedback_loop_dynamic_state,                                    \
                     CmdSetAttachmentFeedbackLoopEnableEXT);                                        \
+  HookInitExtension(KHR_acceleration_structure, GetAccelerationStructureDeviceAddressKHR);   \
   HookInitExtension(KHR_acceleration_structure, GetDeviceAccelerationStructureCompatibilityKHR);   \
   HookInitExtension(KHR_acceleration_structure, GetAccelerationStructureBuildSizesKHR);              \
   HookInitExtension(KHR_acceleration_structure, CreateAccelerationStructureKHR);                   \
+  HookInitExtension(KHR_acceleration_structure, DestroyAccelerationStructureKHR);                   \
   HookInitExtension_Device_Win32();                                                                \
   HookInitExtension_Device_Linux();                                                                \
   HookInitExtension_Device_GGP();                                                                  \
@@ -1672,6 +1674,8 @@ HookDefine4(VkResult, vkCreateAccelerationStructureKHR, VkDevice, device,       
               pAccelerationStructure);                                                               \
   HookDefine2(VkDeviceAddress, vkGetAccelerationStructureDeviceAddressKHR, VkDevice, device,         \
               const VkAccelerationStructureDeviceAddressInfoKHR *, pInfo);                           \
+HookDefine3(void, vkDestroyAccelerationStructureKHR, VkDevice, device, VkAccelerationStructureKHR, \
+              accelerationStructure, const VkAllocationCallbacks *, pAllocator);                     \
   HookDefine3(void, vkGetDeviceAccelerationStructureCompatibilityKHR, VkDevice, device,              \
               const VkAccelerationStructureVersionInfoKHR *, pVersionInfo,                           \
               VkAccelerationStructureCompatibilityKHR *, pCompatibility);                            \

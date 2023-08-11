@@ -2646,6 +2646,10 @@ public:
                                 const VkAllocationCallbacks *pAllocator,
                                 VkAccelerationStructureKHR *pAccelerationStructure);
 
+  void vkDestroyAccelerationStructureKHR(VkDevice device,
+                                         VkAccelerationStructureKHR accelerationStructure,
+                                         const VkAllocationCallbacks *pAllocator);
+
   void vkGetDeviceAccelerationStructureCompatibilityKHR(
       VkDevice device, const VkAccelerationStructureVersionInfoKHR *pVersionInfo,
       VkAccelerationStructureCompatibilityKHR *pCompatibility);
