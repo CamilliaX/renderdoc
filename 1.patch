@@ -1,0 +1,280 @@
+From aa52fe6be38d6d825a41ae6fc70c0499215ff019 Mon Sep 17 00:00:00 2001
+From: sic <sic@qti.qualcomm.com>
+Date: Mon, 14 Aug 2023 14:15:35 +0800
+Subject: 1111
+
+---
+ renderdoc/driver/vulkan/vk_common.h           |  3 +
+ renderdoc/driver/vulkan/vk_core.cpp           |  7 ++
+ renderdoc/driver/vulkan/vk_core.h             | 28 ++++--
+ renderdoc/driver/vulkan/vk_hookset_defs.h     |  9 ++
+ renderdoc/driver/vulkan/vk_serialise.cpp      | 10 +++
+ renderdoc/driver/vulkan/vk_stringise.cpp      |  4 +-
+ .../driver/vulkan/wrappers/vk_misc_funcs.cpp  | 87 +++++++++++++++++++
+ 7 files changed, 139 insertions(+), 9 deletions(-)
+
+diff --git a/renderdoc/driver/vulkan/vk_common.h b/renderdoc/driver/vulkan/vk_common.h
+index 2d9faf38d..4dba272e2 100644
+--- a/renderdoc/driver/vulkan/vk_common.h
++++ b/renderdoc/driver/vulkan/vk_common.h
+@@ -927,6 +927,8 @@ enum class VulkanChunk : uint32_t
+   vkSetDeviceMemoryPriorityEXT,
+   vkCmdSetAttachmentFeedbackLoopEnableEXT,
+   vkCreateAccelerationStructureKHR,
++  vkCmdBuildAccelerationStructuresKHR,
++  vkCmdBuildAccelerationStructuresIndirectKHR,
+   Max,
+ };
+ 
+@@ -1823,6 +1825,7 @@ DECLARE_DESERIALISE_TYPE(VkWriteDescriptorSet);
+ DECLARE_DESERIALISE_TYPE(VkWriteDescriptorSetInlineUniformBlock);
+ 
+ // plain structs with no next chain
++DECLARE_REFLECTION_STRUCT(VkAccelerationStructureBuildRangeInfoKHR);
+ DECLARE_REFLECTION_STRUCT(VkAccelerationStructureGeometryDataKHR);
+ DECLARE_REFLECTION_STRUCT(VkAllocationCallbacks);
+ DECLARE_REFLECTION_STRUCT(VkAttachmentDescription);
+diff --git a/renderdoc/driver/vulkan/vk_core.cpp b/renderdoc/driver/vulkan/vk_core.cpp
+index f4727c1cd..7cbd5a6ec 100644
+--- a/renderdoc/driver/vulkan/vk_core.cpp
++++ b/renderdoc/driver/vulkan/vk_core.cpp
+@@ -3743,6 +3743,13 @@ bool WrappedVulkan::ProcessChunk(ReadSerialiser &ser, VulkanChunk chunk)
+ 
+     case VulkanChunk::vkCreateAccelerationStructureKHR:
+       return Serialise_vkCreateAccelerationStructureKHR(ser, VK_NULL_HANDLE, NULL, NULL, NULL);
++          
++    case VulkanChunk::vkCmdBuildAccelerationStructuresKHR:
++      return Serialise_vkCmdBuildAccelerationStructuresKHR(ser, VK_NULL_HANDLE, 0, NULL, NULL);
++
++    case VulkanChunk::vkCmdBuildAccelerationStructuresIndirectKHR:
++      return Serialise_vkCmdBuildAccelerationStructuresIndirectKHR(ser, VK_NULL_HANDLE, 0, NULL, NULL, NULL, NULL);
++
+ 
+     // chunks that are reserved but not yet serialised
+     case VulkanChunk::vkResetCommandPool:
+diff --git a/renderdoc/driver/vulkan/vk_core.h b/renderdoc/driver/vulkan/vk_core.h
+index cc0fddc2d..e4275f580 100644
+--- a/renderdoc/driver/vulkan/vk_core.h
++++ b/renderdoc/driver/vulkan/vk_core.h
+@@ -2647,19 +2647,31 @@ public:
+                                 VkAccelerationStructureKHR *pAccelerationStructure);
+ 
+   void vkDestroyAccelerationStructureKHR(VkDevice device,
+-                                         VkAccelerationStructureKHR accelerationStructure,
+-                                         const VkAllocationCallbacks *pAllocator);
++                                VkAccelerationStructureKHR accelerationStructure,
++                                const VkAllocationCallbacks *pAllocator);
++
++   IMPLEMENT_FUNCTION_SERIALISED(void, vkCmdBuildAccelerationStructuresKHR, 
++                              VkCommandBuffer commandBuffer, uint32_t infoCount,
++                              const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
++                              const VkAccelerationStructureBuildRangeInfoKHR *const *ppBuildRangeInfos);
++
++  IMPLEMENT_FUNCTION_SERIALISED(void, vkCmdBuildAccelerationStructuresIndirectKHR,
++                                VkCommandBuffer commandBuffer, uint32_t infoCount,
++                                const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
++                                const VkDeviceAddress *pIndirectDeviceAddresses,
++                                const uint32_t *pIndirectStrides,
++                                const uint32_t *const *ppMaxPrimitiveCounts);
+ 
+   void vkGetDeviceAccelerationStructureCompatibilityKHR(
+-      VkDevice device, const VkAccelerationStructureVersionInfoKHR *pVersionInfo,
+-      VkAccelerationStructureCompatibilityKHR *pCompatibility);
++                              VkDevice device, const VkAccelerationStructureVersionInfoKHR *pVersionInfo,
++                              VkAccelerationStructureCompatibilityKHR *pCompatibility);
+ 
+   void vkGetAccelerationStructureBuildSizesKHR(
+-      VkDevice device, VkAccelerationStructureBuildTypeKHR buildType,
+-      const VkAccelerationStructureBuildGeometryInfoKHR *pBuildInfo,
+-      const uint32_t *pMaxPrimitiveCounts, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo);
++                              VkDevice device, VkAccelerationStructureBuildTypeKHR buildType,
++                              const VkAccelerationStructureBuildGeometryInfoKHR *pBuildInfo,
++                              const uint32_t *pMaxPrimitiveCounts, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo);
+ 
+    VkDeviceAddress  vkGetAccelerationStructureDeviceAddressKHR(
+-      VkDevice device, const VkAccelerationStructureDeviceAddressInfoKHR *pInfo);
++                              VkDevice device, const VkAccelerationStructureDeviceAddressInfoKHR *pInfo);
+ 
+ };
+diff --git a/renderdoc/driver/vulkan/vk_hookset_defs.h b/renderdoc/driver/vulkan/vk_hookset_defs.h
+index 4980097cd..e837b2a9e 100644
+--- a/renderdoc/driver/vulkan/vk_hookset_defs.h
++++ b/renderdoc/driver/vulkan/vk_hookset_defs.h
+@@ -940,6 +940,8 @@
+   HookInitExtension(KHR_acceleration_structure, GetAccelerationStructureBuildSizesKHR);              \
+   HookInitExtension(KHR_acceleration_structure, CreateAccelerationStructureKHR);                   \
+   HookInitExtension(KHR_acceleration_structure, DestroyAccelerationStructureKHR);                   \
++  HookInitExtension(KHR_acceleration_structure, CmdBuildAccelerationStructuresKHR);                \
++  HookInitExtension(KHR_acceleration_structure, CmdBuildAccelerationStructuresIndirectKHR);       \
+   HookInitExtension_Device_Win32();                                                                \
+   HookInitExtension_Device_Linux();                                                                \
+   HookInitExtension_Device_GGP();                                                                  \
+@@ -1676,6 +1678,13 @@ HookDefine4(VkResult, vkCreateAccelerationStructureKHR, VkDevice, device,
+               const VkAccelerationStructureDeviceAddressInfoKHR *, pInfo);                           \
+ HookDefine3(void, vkDestroyAccelerationStructureKHR, VkDevice, device, VkAccelerationStructureKHR, \
+               accelerationStructure, const VkAllocationCallbacks *, pAllocator);                     \
++HookDefine4(void, vkCmdBuildAccelerationStructuresKHR, VkCommandBuffer, commandBuffer, uint32_t,   \
++              infoCount, const VkAccelerationStructureBuildGeometryInfoKHR *, pInfos,                \
++              const VkAccelerationStructureBuildRangeInfoKHR *const *, ppBuildRangeInfos);           \
++  HookDefine6(void, vkCmdBuildAccelerationStructuresIndirectKHR, VkCommandBuffer, commandBuffer,     \
++              uint32_t, infoCount, const VkAccelerationStructureBuildGeometryInfoKHR *, pInfos,      \
++              const VkDeviceAddress *, pIndirectDeviceAddresses, const uint32_t *,                   \
++              pIndirectStrides, const uint32_t *const *, ppMaxPrimitiveCounts);                      \
+   HookDefine3(void, vkGetDeviceAccelerationStructureCompatibilityKHR, VkDevice, device,              \
+               const VkAccelerationStructureVersionInfoKHR *, pVersionInfo,                           \
+               VkAccelerationStructureCompatibilityKHR *, pCompatibility);                            \
+diff --git a/renderdoc/driver/vulkan/vk_serialise.cpp b/renderdoc/driver/vulkan/vk_serialise.cpp
+index e41a99979..a5cb3dc23 100644
+--- a/renderdoc/driver/vulkan/vk_serialise.cpp
++++ b/renderdoc/driver/vulkan/vk_serialise.cpp
+@@ -11283,6 +11283,15 @@ void Deserialise(const VkPerformanceQuerySubmitInfoKHR &el)
+ }
+ 
+ //AS
++template <typename SerialiserType>
++void DoSerialise(SerialiserType &ser, VkAccelerationStructureBuildRangeInfoKHR &el)
++{
++  SERIALISE_MEMBER(primitiveCount).Important();
++  SERIALISE_MEMBER(primitiveOffset);
++  SERIALISE_MEMBER(firstVertex).Important();
++  SERIALISE_MEMBER(transformOffset);
++}
++
+ template <typename SerialiserType>
+ void DoSerialise(SerialiserType &ser, VkAccelerationStructureGeometryDataKHR &el)
+ {
+@@ -12027,6 +12036,7 @@ INSTANTIATE_SERIALISE_TYPE(VkVertexInputBindingDescription2EXT);
+ INSTANTIATE_SERIALISE_TYPE(VkWriteDescriptorSet);
+ 
+ // plain structs with no next chain
++INSTANTIATE_SERIALISE_TYPE(VkAccelerationStructureBuildRangeInfoKHR);
+ INSTANTIATE_SERIALISE_TYPE(VkAccelerationStructureGeometryDataKHR);
+ INSTANTIATE_SERIALISE_TYPE(VkAllocationCallbacks);
+ INSTANTIATE_SERIALISE_TYPE(VkAttachmentDescription);
+diff --git a/renderdoc/driver/vulkan/vk_stringise.cpp b/renderdoc/driver/vulkan/vk_stringise.cpp
+index ff9c9616d..79047cde1 100644
+--- a/renderdoc/driver/vulkan/vk_stringise.cpp
++++ b/renderdoc/driver/vulkan/vk_stringise.cpp
+@@ -28,7 +28,7 @@
+ template <>
+ rdcstr DoStringise(const VulkanChunk &el)
+ {
+-  RDCCOMPILE_ASSERT((uint32_t)VulkanChunk::Max == 1179, "Chunks changed without updating names");
++  RDCCOMPILE_ASSERT((uint32_t)VulkanChunk::Max == 1181, "Chunks changed without updating names");
+ 
+   BEGIN_ENUM_STRINGISE(VulkanChunk)
+   {
+@@ -211,6 +211,8 @@ rdcstr DoStringise(const VulkanChunk &el)
+     STRINGISE_ENUM_CLASS(vkSetDeviceMemoryPriorityEXT)
+     STRINGISE_ENUM_CLASS(vkCmdSetAttachmentFeedbackLoopEnableEXT)
+     STRINGISE_ENUM_CLASS(vkCreateAccelerationStructureKHR)
++    STRINGISE_ENUM_CLASS(vkCmdBuildAccelerationStructuresKHR)
++    STRINGISE_ENUM_CLASS(vkCmdBuildAccelerationStructuresIndirectKHR)
+     STRINGISE_ENUM_CLASS_NAMED(Max, "Max Chunk");
+   }
+   END_ENUM_STRINGISE()
+diff --git a/renderdoc/driver/vulkan/wrappers/vk_misc_funcs.cpp b/renderdoc/driver/vulkan/wrappers/vk_misc_funcs.cpp
+index d46d771f6..f6a0fd56d 100644
+--- a/renderdoc/driver/vulkan/wrappers/vk_misc_funcs.cpp
++++ b/renderdoc/driver/vulkan/wrappers/vk_misc_funcs.cpp
+@@ -2725,6 +2725,81 @@ VkResult WrappedVulkan::vkCreateAccelerationStructureKHR(
+   return ret;
+ }
+ 
++template <typename SerialiserType>
++bool WrappedVulkan::Serialise_vkCmdBuildAccelerationStructuresKHR(
++    SerialiserType &ser, VkCommandBuffer commandBuffer, uint32_t infoCount,
++    const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
++    const VkAccelerationStructureBuildRangeInfoKHR *const *ppBuildRangeInfos)
++{
++  SERIALISE_ELEMENT(commandBuffer);
++  SERIALISE_ELEMENT(infoCount);
++  SERIALISE_ELEMENT_ARRAY(pInfos, infoCount).Important();
++  const VkAccelerationStructureBuildRangeInfoKHR *BuildRangeInfos = *ppBuildRangeInfos;
++  (ser).Serialise("ppBuildRangeInfos"_lit, BuildRangeInfos, infoCount, SerialiserFlags::AllocateMemory).Important();
++
++  SERIALISE_CHECK_READ_ERRORS();
++
++  if(IsReplayingAndReading())
++  {
++    ObjDisp(commandBuffer)
++        ->CmdBuildAccelerationStructuresKHR(Unwrap(commandBuffer), infoCount, pInfos, ppBuildRangeInfos);
++  }
++
++  return true;
++}
++
++void WrappedVulkan::vkCmdBuildAccelerationStructuresKHR(
++    VkCommandBuffer commandBuffer, uint32_t infoCount,
++    const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
++    const VkAccelerationStructureBuildRangeInfoKHR *const *ppBuildRangeInfos)
++{
++  SCOPED_DBG_SINK();
++
++  return (ObjDisp(commandBuffer)
++                          ->CmdBuildAccelerationStructuresKHR(Unwrap(commandBuffer), infoCount, pInfos, ppBuildRangeInfos));
++}
++
++template <typename SerialiserType>
++bool WrappedVulkan::Serialise_vkCmdBuildAccelerationStructuresIndirectKHR(
++    SerialiserType &ser, VkCommandBuffer commandBuffer, uint32_t infoCount,
++    const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
++    const VkDeviceAddress *pIndirectDeviceAddresses, const uint32_t *pIndirectStrides,
++    const uint32_t *const *ppMaxPrimitiveCounts)
++{
++  SERIALISE_ELEMENT(commandBuffer);
++  SERIALISE_ELEMENT(infoCount);
++  SERIALISE_ELEMENT_ARRAY(pInfos, infoCount).Important();
++  SERIALISE_ELEMENT_ARRAY(pIndirectDeviceAddresses, infoCount).Important();
++  SERIALISE_ELEMENT_ARRAY(pIndirectStrides, infoCount).Important();
++  const uint32_t *maxorimitivecounts = * ppMaxPrimitiveCounts;
++  (ser).Serialise("ppMaxPrimitiveCounts"_lit, maxorimitivecounts, infoCount, SerialiserFlags::AllocateMemory);
++
++  SERIALISE_CHECK_READ_ERRORS();
++
++  if(IsReplayingAndReading())
++  {
++    ObjDisp(commandBuffer)
++        ->CmdBuildAccelerationStructuresIndirectKHR(Unwrap(commandBuffer), infoCount, pInfos,
++                                                    pIndirectDeviceAddresses, pIndirectStrides,
++                                                    ppMaxPrimitiveCounts);
++  }
++
++  return true;
++}
++
++void WrappedVulkan::vkCmdBuildAccelerationStructuresIndirectKHR(
++    VkCommandBuffer commandBuffer, uint32_t infoCount,
++    const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
++    const VkDeviceAddress *pIndirectDeviceAddresses, const uint32_t *pIndirectStrides,
++    const uint32_t *const *ppMaxPrimitiveCounts)
++{
++  return (ObjDisp(commandBuffer)
++                          ->CmdBuildAccelerationStructuresIndirectKHR(
++                              Unwrap(commandBuffer), infoCount, pInfos, pIndirectDeviceAddresses,
++                              pIndirectStrides, ppMaxPrimitiveCounts));
++}
++
++
+ VkDeviceAddress WrappedVulkan::vkGetAccelerationStructureDeviceAddressKHR(
+     VkDevice device, const VkAccelerationStructureDeviceAddressInfoKHR *pInfo)
+ {
+@@ -2789,3 +2864,15 @@ INSTANTIATE_FUNCTION_SERIALISED(VkResult, vkCreateAccelerationStructureKHR, VkDe
+                                 const VkAccelerationStructureCreateInfoKHR *pCreateInfo,
+                                 const VkAllocationCallbacks *pAllocator,
+                                 VkAccelerationStructureKHR *pAccelerationStructure);
++
++INSTANTIATE_FUNCTION_SERIALISED(void, vkCmdBuildAccelerationStructuresKHR, VkCommandBuffer commandBuffer, uint32_t infoCount,
++                                const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
++                                const VkAccelerationStructureBuildRangeInfoKHR *const *ppBuildRangeInfos);
++
++INSTANTIATE_FUNCTION_SERIALISED(void, vkCmdBuildAccelerationStructuresIndirectKHR,
++                                VkCommandBuffer commandBuffer, uint32_t infoCount,
++                                const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
++                                const VkDeviceAddress *pIndirectDeviceAddresses,
++                                const uint32_t *pIndirectStrides,
++                                const uint32_t *const *ppMaxPrimitiveCounts);
++
+-- 
+2.41.0.windows.2
+
