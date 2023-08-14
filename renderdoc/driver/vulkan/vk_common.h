@@ -927,6 +927,11 @@ enum class VulkanChunk : uint32_t
   vkSetDeviceMemoryPriorityEXT,
   vkCmdSetAttachmentFeedbackLoopEnableEXT,
   vkCreateAccelerationStructureKHR,
+  vkCmdBuildAccelerationStructuresKHR,
+  vkCmdBuildAccelerationStructuresIndirectKHR,
+  vkCmdCopyAccelerationStructureToMemoryKHR,
+  vkCmdCopyMemoryToAccelerationStructureKHR,
+  vkCmdWriteAccelerationStructuresPropertiesKHR,
   Max,
 };
 
@@ -1020,11 +1025,14 @@ DECLARE_REFLECTION_STRUCT(VkCommandBufferSubmitInfo);
 DECLARE_REFLECTION_STRUCT(VkCommandPoolCreateInfo);
 DECLARE_REFLECTION_STRUCT(VkComputePipelineCreateInfo);
 DECLARE_REFLECTION_STRUCT(VkConditionalRenderingBeginInfoEXT);
+DECLARE_REFLECTION_STRUCT(VkCopyAccelerationStructureInfoKHR);
+DECLARE_REFLECTION_STRUCT(VkCopyAccelerationStructureToMemoryInfoKHR);
 DECLARE_REFLECTION_STRUCT(VkCopyBufferInfo2);
 DECLARE_REFLECTION_STRUCT(VkCopyBufferToImageInfo2);
 DECLARE_REFLECTION_STRUCT(VkCopyDescriptorSet);
 DECLARE_REFLECTION_STRUCT(VkCopyImageInfo2);
 DECLARE_REFLECTION_STRUCT(VkCopyImageToBufferInfo2);
+DECLARE_REFLECTION_STRUCT(VkCopyMemoryToAccelerationStructureInfoKHR);
 DECLARE_REFLECTION_STRUCT(VkDebugMarkerMarkerInfoEXT);
 DECLARE_REFLECTION_STRUCT(VkDebugMarkerObjectNameInfoEXT);
 DECLARE_REFLECTION_STRUCT(VkDebugMarkerObjectTagInfoEXT);
@@ -1446,11 +1454,14 @@ DECLARE_DESERIALISE_TYPE(VkCommandBufferSubmitInfo);
 DECLARE_DESERIALISE_TYPE(VkCommandPoolCreateInfo);
 DECLARE_DESERIALISE_TYPE(VkComputePipelineCreateInfo);
 DECLARE_DESERIALISE_TYPE(VkConditionalRenderingBeginInfoEXT);
+DECLARE_DESERIALISE_TYPE(VkCopyAccelerationStructureInfoKHR);
+DECLARE_DESERIALISE_TYPE(VkCopyAccelerationStructureToMemoryInfoKHR);
 DECLARE_DESERIALISE_TYPE(VkCopyBufferInfo2);
 DECLARE_DESERIALISE_TYPE(VkCopyBufferToImageInfo2);
 DECLARE_DESERIALISE_TYPE(VkCopyDescriptorSet);
 DECLARE_DESERIALISE_TYPE(VkCopyImageInfo2);
 DECLARE_DESERIALISE_TYPE(VkCopyImageToBufferInfo2);
+DECLARE_DESERIALISE_TYPE(VkCopyMemoryToAccelerationStructureInfoKHR);
 DECLARE_DESERIALISE_TYPE(VkDebugMarkerMarkerInfoEXT);
 DECLARE_DESERIALISE_TYPE(VkDebugMarkerObjectNameInfoEXT);
 DECLARE_DESERIALISE_TYPE(VkDebugMarkerObjectTagInfoEXT);
@@ -1823,6 +1834,7 @@ DECLARE_DESERIALISE_TYPE(VkWriteDescriptorSet);
 DECLARE_DESERIALISE_TYPE(VkWriteDescriptorSetInlineUniformBlock);
 
 // plain structs with no next chain
+DECLARE_REFLECTION_STRUCT(VkAccelerationStructureBuildRangeInfoKHR);
 DECLARE_REFLECTION_STRUCT(VkAccelerationStructureGeometryDataKHR);
 DECLARE_REFLECTION_STRUCT(VkAllocationCallbacks);
 DECLARE_REFLECTION_STRUCT(VkAttachmentDescription);

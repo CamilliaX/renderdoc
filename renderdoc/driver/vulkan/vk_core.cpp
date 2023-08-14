@@ -3743,6 +3743,21 @@ bool WrappedVulkan::ProcessChunk(ReadSerialiser &ser, VulkanChunk chunk)
 
     case VulkanChunk::vkCreateAccelerationStructureKHR:
       return Serialise_vkCreateAccelerationStructureKHR(ser, VK_NULL_HANDLE, NULL, NULL, NULL);
+          
+    case VulkanChunk::vkCmdBuildAccelerationStructuresKHR:
+      return Serialise_vkCmdBuildAccelerationStructuresKHR(ser, VK_NULL_HANDLE, 0, NULL, NULL);
+
+    case VulkanChunk::vkCmdBuildAccelerationStructuresIndirectKHR:
+      return Serialise_vkCmdBuildAccelerationStructuresIndirectKHR(ser, VK_NULL_HANDLE, 0, NULL, NULL, NULL, NULL);
+
+    case VulkanChunk::vkCmdCopyAccelerationStructureToMemoryKHR:
+      return Serialise_vkCmdCopyAccelerationStructureToMemoryKHR(ser, VK_NULL_HANDLE, NULL);
+
+    case VulkanChunk::vkCmdCopyMemoryToAccelerationStructureKHR:
+      return Serialise_vkCmdCopyMemoryToAccelerationStructureKHR(ser, VK_NULL_HANDLE, NULL);
+
+     case VulkanChunk::vkCmdWriteAccelerationStructuresPropertiesKHR:
+      return Serialise_vkCmdWriteAccelerationStructuresPropertiesKHR(ser, VK_NULL_HANDLE, 0, NULL, VK_QUERY_TYPE_MAX_ENUM, VK_NULL_HANDLE, 0);
 
     // chunks that are reserved but not yet serialised
     case VulkanChunk::vkResetCommandPool:

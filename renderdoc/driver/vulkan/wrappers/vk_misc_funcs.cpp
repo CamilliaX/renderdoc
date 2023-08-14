@@ -2725,6 +2725,175 @@ VkResult WrappedVulkan::vkCreateAccelerationStructureKHR(
   return ret;
 }
 
+template <typename SerialiserType>
+bool WrappedVulkan::Serialise_vkCmdBuildAccelerationStructuresKHR(
+    SerialiserType &ser, VkCommandBuffer commandBuffer, uint32_t infoCount,
+    const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
+    const VkAccelerationStructureBuildRangeInfoKHR *const *ppBuildRangeInfos)
+{
+  SERIALISE_ELEMENT(commandBuffer);
+  SERIALISE_ELEMENT(infoCount);
+  SERIALISE_ELEMENT_ARRAY(pInfos, infoCount).Important();
+  const VkAccelerationStructureBuildRangeInfoKHR *BuildRangeInfos = *ppBuildRangeInfos;
+  (ser).Serialise("ppBuildRangeInfos"_lit, BuildRangeInfos, infoCount, SerialiserFlags::AllocateMemory).Important();
+
+  SERIALISE_CHECK_READ_ERRORS();
+
+  if(IsReplayingAndReading())
+  {
+    ObjDisp(commandBuffer)
+        ->CmdBuildAccelerationStructuresKHR(Unwrap(commandBuffer), infoCount, pInfos, ppBuildRangeInfos);
+  }
+
+  return true;
+}
+
+void WrappedVulkan::vkCmdBuildAccelerationStructuresKHR(
+    VkCommandBuffer commandBuffer, uint32_t infoCount,
+    const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
+    const VkAccelerationStructureBuildRangeInfoKHR *const *ppBuildRangeInfos)
+{
+  SCOPED_DBG_SINK();
+
+  return (ObjDisp(commandBuffer)
+                          ->CmdBuildAccelerationStructuresKHR(Unwrap(commandBuffer), infoCount, pInfos, ppBuildRangeInfos));
+}
+
+template <typename SerialiserType>
+bool WrappedVulkan::Serialise_vkCmdBuildAccelerationStructuresIndirectKHR(
+    SerialiserType &ser, VkCommandBuffer commandBuffer, uint32_t infoCount,
+    const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
+    const VkDeviceAddress *pIndirectDeviceAddresses, const uint32_t *pIndirectStrides,
+    const uint32_t *const *ppMaxPrimitiveCounts)
+{
+  SERIALISE_ELEMENT(commandBuffer);
+  SERIALISE_ELEMENT(infoCount);
+  SERIALISE_ELEMENT_ARRAY(pInfos, infoCount).Important();
+  SERIALISE_ELEMENT_ARRAY(pIndirectDeviceAddresses, infoCount).Important();
+  SERIALISE_ELEMENT_ARRAY(pIndirectStrides, infoCount).Important();
+  const uint32_t *maxorimitivecounts = * ppMaxPrimitiveCounts;
+  (ser).Serialise("ppMaxPrimitiveCounts"_lit, maxorimitivecounts, infoCount, SerialiserFlags::AllocateMemory);
+
+  SERIALISE_CHECK_READ_ERRORS();
+
+  if(IsReplayingAndReading())
+  {
+    ObjDisp(commandBuffer)
+        ->CmdBuildAccelerationStructuresIndirectKHR(Unwrap(commandBuffer), infoCount, pInfos,
+                                                    pIndirectDeviceAddresses, pIndirectStrides,
+                                                    ppMaxPrimitiveCounts);
+  }
+
+  return true;
+}
+
+void WrappedVulkan::vkCmdBuildAccelerationStructuresIndirectKHR(
+    VkCommandBuffer commandBuffer, uint32_t infoCount,
+    const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
+    const VkDeviceAddress *pIndirectDeviceAddresses, const uint32_t *pIndirectStrides,
+    const uint32_t *const *ppMaxPrimitiveCounts)
+{
+  return (ObjDisp(commandBuffer)
+                          ->CmdBuildAccelerationStructuresIndirectKHR(
+                              Unwrap(commandBuffer), infoCount, pInfos, pIndirectDeviceAddresses,
+                              pIndirectStrides, ppMaxPrimitiveCounts));
+}
+
+void WrappedVulkan::vkCmdCopyAccelerationStructureKHR(VkCommandBuffer commandBuffer,
+                                                      const VkCopyAccelerationStructureInfoKHR *pInfo)
+{
+  return (
+      ObjDisp(commandBuffer)->CmdCopyAccelerationStructureKHR(Unwrap(commandBuffer), pInfo));
+
+}
+
+template <typename SerialiserType>
+bool WrappedVulkan::Serialise_vkCmdCopyAccelerationStructureToMemoryKHR(
+    SerialiserType &ser, VkCommandBuffer commandBuffer,
+    const VkCopyAccelerationStructureToMemoryInfoKHR *pInfo)
+{
+  SERIALISE_ELEMENT(commandBuffer);
+  SERIALISE_ELEMENT_LOCAL(Info, *pInfo).Important();
+
+  SERIALISE_CHECK_READ_ERRORS();
+
+  if(IsReplayingAndReading())
+  {
+    ObjDisp(commandBuffer)->CmdCopyAccelerationStructureToMemoryKHR(Unwrap(commandBuffer), &Info);
+  }
+
+  return true;
+}
+
+void WrappedVulkan::vkCmdCopyAccelerationStructureToMemoryKHR(
+    VkCommandBuffer commandBuffer, const VkCopyAccelerationStructureToMemoryInfoKHR *pInfo)
+{
+  return (
+      ObjDisp(commandBuffer)->CmdCopyAccelerationStructureToMemoryKHR(Unwrap(commandBuffer), pInfo));
+}
+
+template <typename SerialiserType>
+bool WrappedVulkan::Serialise_vkCmdCopyMemoryToAccelerationStructureKHR(
+    SerialiserType &ser, VkCommandBuffer commandBuffer,
+    const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo)
+{
+  SERIALISE_ELEMENT(commandBuffer);
+  SERIALISE_ELEMENT_LOCAL(info, *pInfo).Important();
+
+  SERIALISE_CHECK_READ_ERRORS();
+
+  if(IsReplayingAndReading())
+  {
+    ObjDisp(commandBuffer)->CmdCopyMemoryToAccelerationStructureKHR(Unwrap(commandBuffer), &info);
+  }
+
+  return true;
+}
+
+void WrappedVulkan::vkCmdCopyMemoryToAccelerationStructureKHR(
+    VkCommandBuffer commandBuffer, const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo)
+{
+  return (
+      ObjDisp(commandBuffer)->CmdCopyMemoryToAccelerationStructureKHR(Unwrap(commandBuffer), pInfo));
+}
+
+template <typename SerialiserType>
+bool WrappedVulkan::Serialise_vkCmdWriteAccelerationStructuresPropertiesKHR(
+    SerialiserType &ser, VkCommandBuffer commandBuffer, uint32_t accelerationStructureCount,
+    const VkAccelerationStructureKHR *pAccelerationStructures, VkQueryType queryType,
+    VkQueryPool queryPool, uint32_t firstQuery)
+{
+  SERIALISE_ELEMENT(commandBuffer);
+  SERIALISE_ELEMENT(accelerationStructureCount);
+  SERIALISE_ELEMENT_LOCAL(accelerationStructures, *pAccelerationStructures).Important();
+  SERIALISE_ELEMENT(queryType);
+  SERIALISE_ELEMENT(queryPool).Important();
+  SERIALISE_ELEMENT(firstQuery).Important();
+
+  SERIALISE_CHECK_READ_ERRORS();
+
+  if(IsReplayingAndReading())
+  {
+    ObjDisp(commandBuffer)
+        ->CmdWriteAccelerationStructuresPropertiesKHR(Unwrap(commandBuffer), accelerationStructureCount, 
+            &accelerationStructures, queryType, Unwrap(queryPool), firstQuery);
+  }
+
+  return true;
+}
+
+void WrappedVulkan::vkCmdWriteAccelerationStructuresPropertiesKHR(
+    VkCommandBuffer commandBuffer, uint32_t accelerationStructureCount,
+    const VkAccelerationStructureKHR *pAccelerationStructures, VkQueryType queryType,
+    VkQueryPool queryPool, uint32_t firstQuery)
+{
+  return (ObjDisp(commandBuffer)
+                          ->CmdWriteAccelerationStructuresPropertiesKHR(
+                              Unwrap(commandBuffer), accelerationStructureCount,
+                              pAccelerationStructures, queryType, Unwrap(queryPool), firstQuery));
+}
+
+
 VkDeviceAddress WrappedVulkan::vkGetAccelerationStructureDeviceAddressKHR(
     VkDevice device, const VkAccelerationStructureDeviceAddressInfoKHR *pInfo)
 {
@@ -2789,3 +2958,27 @@ INSTANTIATE_FUNCTION_SERIALISED(VkResult, vkCreateAccelerationStructureKHR, VkDe
                                 const VkAccelerationStructureCreateInfoKHR *pCreateInfo,
                                 const VkAllocationCallbacks *pAllocator,
                                 VkAccelerationStructureKHR *pAccelerationStructure);
+
+INSTANTIATE_FUNCTION_SERIALISED(void, vkCmdBuildAccelerationStructuresKHR, VkCommandBuffer commandBuffer, uint32_t infoCount,
+                                const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
+                                const VkAccelerationStructureBuildRangeInfoKHR *const *ppBuildRangeInfos);
+
+INSTANTIATE_FUNCTION_SERIALISED(void, vkCmdBuildAccelerationStructuresIndirectKHR,
+                                VkCommandBuffer commandBuffer, uint32_t infoCount,
+                                const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
+                                const VkDeviceAddress *pIndirectDeviceAddresses,
+                                const uint32_t *pIndirectStrides,
+                                const uint32_t *const *ppMaxPrimitiveCounts);
+
+INSTANTIATE_FUNCTION_SERIALISED(void, vkCmdCopyAccelerationStructureToMemoryKHR,
+                                VkCommandBuffer commandBuffer,
+                                const VkCopyAccelerationStructureToMemoryInfoKHR *pInfo);
+
+INSTANTIATE_FUNCTION_SERIALISED(void, vkCmdCopyMemoryToAccelerationStructureKHR,
+                                VkCommandBuffer commandBuffer,
+                                const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo);
+
+INSTANTIATE_FUNCTION_SERIALISED(void, vkCmdWriteAccelerationStructuresPropertiesKHR,
+                                VkCommandBuffer commandBuffer, uint32_t accelerationStructureCount,
+                                const VkAccelerationStructureKHR *pAccelerationStructures,
+                                VkQueryType queryType, VkQueryPool queryPool, uint32_t firstQuery);

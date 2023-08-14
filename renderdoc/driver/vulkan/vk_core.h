@@ -2647,19 +2647,47 @@ public:
                                 VkAccelerationStructureKHR *pAccelerationStructure);
 
   void vkDestroyAccelerationStructureKHR(VkDevice device,
-                                         VkAccelerationStructureKHR accelerationStructure,
-                                         const VkAllocationCallbacks *pAllocator);
+                                VkAccelerationStructureKHR accelerationStructure,
+                                const VkAllocationCallbacks *pAllocator);
+
+   IMPLEMENT_FUNCTION_SERIALISED(void, vkCmdBuildAccelerationStructuresKHR, 
+                              VkCommandBuffer commandBuffer, uint32_t infoCount,
+                              const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
+                              const VkAccelerationStructureBuildRangeInfoKHR *const *ppBuildRangeInfos);
+
+  IMPLEMENT_FUNCTION_SERIALISED(void, vkCmdBuildAccelerationStructuresIndirectKHR,
+                                VkCommandBuffer commandBuffer, uint32_t infoCount,
+                                const VkAccelerationStructureBuildGeometryInfoKHR *pInfos,
+                                const VkDeviceAddress *pIndirectDeviceAddresses,
+                                const uint32_t *pIndirectStrides,
+                                const uint32_t *const *ppMaxPrimitiveCounts);
+
+  void vkCmdCopyAccelerationStructureKHR(VkCommandBuffer commandBuffer,
+                                 const VkCopyAccelerationStructureInfoKHR *pInfo);
+
+  IMPLEMENT_FUNCTION_SERIALISED(void, vkCmdCopyAccelerationStructureToMemoryKHR,
+                                VkCommandBuffer commandBuffer,
+                                const VkCopyAccelerationStructureToMemoryInfoKHR *pInfo);
+
+  IMPLEMENT_FUNCTION_SERIALISED(void, vkCmdCopyMemoryToAccelerationStructureKHR,
+                                VkCommandBuffer commandBuffer,
+                                const VkCopyMemoryToAccelerationStructureInfoKHR *pInfo);
+
+  IMPLEMENT_FUNCTION_SERIALISED(void, vkCmdWriteAccelerationStructuresPropertiesKHR,
+                                VkCommandBuffer commandBuffer, uint32_t accelerationStructureCount,
+                                const VkAccelerationStructureKHR *pAccelerationStructures,
+                                VkQueryType queryType, VkQueryPool queryPool, uint32_t firstQuery);
 
   void vkGetDeviceAccelerationStructureCompatibilityKHR(
-      VkDevice device, const VkAccelerationStructureVersionInfoKHR *pVersionInfo,
-      VkAccelerationStructureCompatibilityKHR *pCompatibility);
+                              VkDevice device, const VkAccelerationStructureVersionInfoKHR *pVersionInfo,
+                              VkAccelerationStructureCompatibilityKHR *pCompatibility);
 
   void vkGetAccelerationStructureBuildSizesKHR(
-      VkDevice device, VkAccelerationStructureBuildTypeKHR buildType,
-      const VkAccelerationStructureBuildGeometryInfoKHR *pBuildInfo,
-      const uint32_t *pMaxPrimitiveCounts, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo);
+                              VkDevice device, VkAccelerationStructureBuildTypeKHR buildType,
+                              const VkAccelerationStructureBuildGeometryInfoKHR *pBuildInfo,
+                              const uint32_t *pMaxPrimitiveCounts, VkAccelerationStructureBuildSizesInfoKHR *pSizeInfo);
 
    VkDeviceAddress  vkGetAccelerationStructureDeviceAddressKHR(
-      VkDevice device, const VkAccelerationStructureDeviceAddressInfoKHR *pInfo);
+                              VkDevice device, const VkAccelerationStructureDeviceAddressInfoKHR *pInfo);
 
 };
